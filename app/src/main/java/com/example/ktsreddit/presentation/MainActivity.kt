@@ -1,4 +1,4 @@
-package com.example.ktsreddit
+package com.example.ktsreddit.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -6,38 +6,32 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.ktsreddit.ui.theme.KtsRedditTheme
+import com.example.ktsreddit.R
+import com.example.ktsreddit.presentation.ui.pages.Onboarding
+import com.example.ktsreddit.presentation.ui.theme.KtsRedditTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+
+            val hello: String = getString(R.string.start_screen_hello)
+            val next: String = getString(R.string.start_screen_next)
+
             KtsRedditTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Android")
+                    Onboarding(
+                        hello,
+                        next
+                    )
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    KtsRedditTheme {
-        Greeting("Android")
-    }
-}

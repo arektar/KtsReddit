@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">KtsReddit</string>
+    <string name="start_screen_hello">Greetings, User!!!</string>
+    <string name="start_screen_next">Next >>></string>
 </resources>
