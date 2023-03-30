@@ -1,5 +1,6 @@
 package com.example.ktsreddit.presentation
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,13 +16,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            GetFirstScreen()
+            val isDarkTheme: Boolean = setTheme(this)
+            GetFirstScreen(isDarkTheme)
         }
     }
 }
+
 @Composable
-fun GetFirstScreen(){
-    KtsRedditTheme {
+fun GetFirstScreen(isDarkTheme: Boolean) {
+    KtsRedditTheme(darkTheme = isDarkTheme) {
         // A surface container using the 'background' color from the theme
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -30,4 +33,9 @@ fun GetFirstScreen(){
             Onboarding()
         }
     }
+}
+
+fun setTheme(activity: MainActivity): Boolean {
+    val orientation = activity.resources.configuration.orientation
+    return orientation != Configuration.ORIENTATION_PORTRAIT
 }
