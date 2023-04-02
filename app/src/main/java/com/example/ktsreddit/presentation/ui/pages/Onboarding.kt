@@ -28,6 +28,7 @@ fun Onboarding() {
                 modifier = Modifier.fillMaxSize()
             ) {
                 Content()
+                ToMainScreenButton()
             }
         }
         else -> {
@@ -37,6 +38,7 @@ fun Onboarding() {
                 modifier = Modifier.fillMaxSize()
             ) {
                 Content()
+                ToMainScreenButton()
             }
         }
     }
@@ -50,11 +52,14 @@ fun Content() {
     ) {
         Text(text = stringResource(id = R.string.start_screen_hello), fontSize = 25.sp)
         Image(
-            imageVector = ImageVector.vectorResource(id = R.drawable._101381_light),
+            imageVector = ImageVector.vectorResource(id = R.drawable.img_onboarding_lotus),
             contentDescription = "Lotus"
         )
     }
+}
 
+@Composable
+fun ToMainScreenButton() {
     Button(onClick = { /*TODO*/ }) {
         Text(stringResource(id = R.string.start_screen_next), fontSize = 25.sp)
     }

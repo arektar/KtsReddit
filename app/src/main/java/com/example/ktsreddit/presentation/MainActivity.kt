@@ -16,9 +16,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val isDarkTheme: Boolean = setTheme(this)
+            val isDarkTheme: Boolean = isPortraitOrientation(this)
             GetFirstScreen(isDarkTheme)
         }
+    }
+
+    private fun isPortraitOrientation(activity: MainActivity): Boolean {
+        val orientation = activity.resources.configuration.orientation
+        return orientation != Configuration.ORIENTATION_PORTRAIT
     }
 }
 
@@ -35,7 +40,3 @@ fun GetFirstScreen(isDarkTheme: Boolean) {
     }
 }
 
-fun setTheme(activity: MainActivity): Boolean {
-    val orientation = activity.resources.configuration.orientation
-    return orientation != Configuration.ORIENTATION_PORTRAIT
-}
