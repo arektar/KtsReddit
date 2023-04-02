@@ -1,4 +1,4 @@
-package com.example.ktsreddit.ui.theme
+package com.example.ktsreddit.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
