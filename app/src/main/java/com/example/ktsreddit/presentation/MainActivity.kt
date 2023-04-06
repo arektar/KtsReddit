@@ -9,6 +9,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.fragment.app.FragmentManager
 import com.example.ktsreddit.presentation.ui.pages.Onboarding
 import com.example.ktsreddit.presentation.ui.theme.KtsRedditTheme
 
@@ -18,6 +19,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val isDarkTheme: Boolean = isPortraitOrientation(this)
             GetFirstScreen(isDarkTheme)
+
         }
     }
 
@@ -33,9 +35,9 @@ fun GetFirstScreen(isDarkTheme: Boolean) {
         // A surface container using the 'background' color from the theme
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colors.background
+            color = MaterialTheme.colors.background,
         ) {
-            Onboarding()
+
         }
     }
 }
