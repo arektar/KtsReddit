@@ -15,18 +15,25 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.ktsreddit.R
+import com.example.ktsreddit.presentation.ui.models.AuthState
+import com.example.ktsreddit.presentation.ui.models.MainViewModel
 import com.example.ktsreddit.presentation.ui.theme.KtsRedditTheme
+import kotlinx.coroutines.flow.observeOn
 
 class AuthorisationFragment : BaseComposeFragment() {
 
     private lateinit var navController: NavController
+    private val viewModel: MainViewModel by viewModels()
+    //private val viewBinding by viewBinding()
 
     @Composable
     override fun ComposeScreen() {
-        AuthView(::navigateNext)
+        AuthView(::navigateNext, viewModel)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -36,59 +43,62 @@ class AuthorisationFragment : BaseComposeFragment() {
 
     private fun navigateNext() {
         navController.navigate(
-            AuthorisationFragmentDirections.actionAuthorisationFragmentToMainPageFragment())
+            AuthorisationFragmentDirections.actionAuthorisationFragmentToMainPageFragment()
+        )
     }
 
 }
 
 
 @Composable
-fun AuthView(navigateNext: () -> Unit) {
+fun AuthView(navigateNext: () -> Unit, viewModel: MainViewModel) {
 
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
     ) {
-        AuthContent()
+        AuthContent(viewModel)
         LoginButton(navigateNext)
     }
 
 }
 
 @Composable
-fun AuthContent() {
+fun AuthContent(viewModel: MainViewModel) {
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        val authState by viewModel.uiState.collectAsState()
 
-        LoginInput()
+        LoginInput(authState, onTextUpdate = { data: String ->
+            viewModel.validateLogin(data)
+        })
         PasswordInput()
 
     }
 }
 
 @Composable
-fun LoginInput() {
-    var login by remember { mutableStateOf("") }
-    var loginTextError by remember { mutableStateOf(false) }
-    val loginTextUpdate = { data: String ->
-        login = data
-        val isValid = Patterns.EMAIL_ADDRESS.matcher(login).matches()
-        loginTextError = !isValid
-    }
+fun LoginInput(authState: AuthState, onTextUpdate: (String) -> Unit) {
+    //var login by remember { mutableStateOf("") }
+    //var loginTextError by remember { mutableStateOf(false) }
+
+    val login: String = authState.login
+    val loginTextError: Boolean = authState.loginIsCorrect
 
 
     TextField(
         value = login,
-        onValueChange = loginTextUpdate,
+        onValueChange = onTextUpdate,
         label = { Text(stringResource(id = R.string.mail_input)) },
         isError = loginTextError,
         modifier = Modifier.fillMaxWidth(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
     )
 }
+
 
 @Composable
 fun PasswordInput() {
@@ -123,6 +133,6 @@ fun LoginButton(navigateNext: () -> Unit) {
 @Composable
 fun AuthPreview() {
     KtsRedditTheme {
-        AuthView {}
+        //AuthView {}
     }
 }
