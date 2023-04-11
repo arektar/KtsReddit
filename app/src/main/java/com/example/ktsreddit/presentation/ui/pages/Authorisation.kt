@@ -15,14 +15,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.ktsreddit.R
 import com.example.ktsreddit.presentation.ui.models.AuthState
 import com.example.ktsreddit.presentation.ui.models.MainViewModel
 import com.example.ktsreddit.presentation.ui.theme.KtsRedditTheme
-import kotlinx.coroutines.flow.observeOn
 
 class AuthorisationFragment : BaseComposeFragment() {
 
@@ -57,8 +55,11 @@ fun AuthView(navigateNext: () -> Unit, viewModel: MainViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
     ) {
+        val authState by viewModel.uiState.collectAsState()
+        val buttonIsActive: Boolean = authState.loginIsCorrect and authState.passwordIsCorrect
+
         AuthContent(viewModel)
-        LoginButton(navigateNext)
+        LoginButton(navigateNext, buttonIsActive)
     }
 
 }
@@ -74,7 +75,9 @@ fun AuthContent(viewModel: MainViewModel) {
         LoginInput(authState, onTextUpdate = {
             viewModel.validateLogin(it)
         })
-        PasswordInput()
+        PasswordInput(authState, onTextUpdate = {
+            viewModel.validatePassword(it)
+        })
 
     }
 }
@@ -85,7 +88,7 @@ fun LoginInput(authState: AuthState, onTextUpdate: (String) -> Unit) {
     //var loginTextError by remember { mutableStateOf(false) }
 
     val login: String = authState.login
-    val loginTextError: Boolean = authState.loginIsCorrect
+    val loginTextError: Boolean = !authState.loginIsCorrect
 
 
     TextField(
@@ -100,18 +103,14 @@ fun LoginInput(authState: AuthState, onTextUpdate: (String) -> Unit) {
 
 
 @Composable
-fun PasswordInput() {
-    var password by remember { mutableStateOf("") }
-    var passwordTextError by remember { mutableStateOf(false) }
-    val passwordTextUpdate = { data: String ->
-        password = data
-        val isValid = password.length >= 8
-        passwordTextError = !isValid
-    }
+fun PasswordInput(authState: AuthState, onTextUpdate: (String) -> Unit) {
+
+    val password: String = authState.password
+    val passwordTextError: Boolean = !authState.passwordIsCorrect
 
     TextField(
         value = password,
-        onValueChange = passwordTextUpdate,
+        onValueChange = onTextUpdate,
         label = { Text(stringResource(id = R.string.password_input)) },
         isError = passwordTextError,
         modifier = Modifier.fillMaxWidth(),
@@ -122,8 +121,8 @@ fun PasswordInput() {
 
 
 @Composable
-fun LoginButton(navigateNext: () -> Unit) {
-    Button(onClick = { navigateNext() }) {
+fun LoginButton(navigateNext: () -> Unit, isActive:Boolean) {
+    Button(onClick = { navigateNext() }, enabled=isActive) {
         Text(stringResource(id = R.string.login), fontSize = 25.sp)
     }
 }
@@ -132,6 +131,7 @@ fun LoginButton(navigateNext: () -> Unit) {
 @Composable
 fun AuthPreview() {
     KtsRedditTheme {
-        //AuthView {}
+        //val viewModel: MainViewModel = MainViewModel(savedStateHandle = SavedStateHandle.createHandle())
+        //AuthView({}, viewModel)
     }
 }

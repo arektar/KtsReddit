@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 
 class MainViewModel(
@@ -28,10 +27,21 @@ class MainViewModel(
     }
 
 
-    fun validateLogin(login: String){
+    fun validateLogin(login: String) {
         val loginIsCorrect = Patterns.EMAIL_ADDRESS.matcher(login).matches()
-        val newAuthState = _uiState.value.apply { this.login = login }
-        newAuthState.apply { this.loginIsCorrect = loginIsCorrect }
+        val newAuthState = _uiState.value.copy(
+            login = login,
+            loginIsCorrect = loginIsCorrect
+        )
+        _uiState.value = newAuthState
+    }
+
+    fun validatePassword(password: String) {
+        val passwordIsCorrect = password.length >= 8
+        val newAuthState = _uiState.value.copy(
+            password = password,
+            passwordIsCorrect = passwordIsCorrect
+        )
         _uiState.value = newAuthState
     }
 
@@ -42,10 +52,10 @@ class MainViewModel(
 }
 
 data class AuthState(
-    var login: String,
-    var password: String,
-    var loginIsCorrect: Boolean = false,
-    var passwordIsCorrect: Boolean = false,
+    val login: String,
+    val password: String,
+    val loginIsCorrect: Boolean = false,
+    val passwordIsCorrect: Boolean = false,
 )
 
 
