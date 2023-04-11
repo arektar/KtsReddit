@@ -2,7 +2,6 @@ package com.example.ktsreddit.presentation.ui.pages
 
 import BaseComposeFragment
 import android.os.Bundle
-import android.util.Patterns
 import android.view.View
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -72,8 +71,8 @@ fun AuthContent(viewModel: MainViewModel) {
     ) {
         val authState by viewModel.uiState.collectAsState()
 
-        LoginInput(authState, onTextUpdate = { data: String ->
-            viewModel.validateLogin(data)
+        LoginInput(authState, onTextUpdate = {
+            viewModel.validateLogin(it)
         })
         PasswordInput()
 
