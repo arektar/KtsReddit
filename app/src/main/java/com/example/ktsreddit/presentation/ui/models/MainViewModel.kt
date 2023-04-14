@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class MainViewModel(
@@ -15,14 +16,12 @@ class MainViewModel(
 
 
     private val _uiState = MutableStateFlow(DEFAULT_AUTH_STATE)
-
-    // The UI collects from this StateFlow to get its state updates
-    val uiState: StateFlow<AuthState> = _uiState
+    val uiState: StateFlow<AuthState> = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
             _uiState.value =
-                savedStateHandle.getStateFlow<AuthState>("auth", DEFAULT_AUTH_STATE).value
+                savedStateHandle.getStateFlow("auth", DEFAULT_AUTH_STATE).value
         }
     }
 
@@ -47,7 +46,7 @@ class MainViewModel(
 
 
     companion object {
-        var DEFAULT_AUTH_STATE = AuthState("", "")
+        val DEFAULT_AUTH_STATE = AuthState("", "")
     }
 }
 
@@ -56,7 +55,9 @@ data class AuthState(
     val password: String,
     val loginIsCorrect: Boolean = false,
     val passwordIsCorrect: Boolean = false,
-)
+){
+    val loginEnabled = this.loginIsCorrect && this.passwordIsCorrect
+}
 
 
 
