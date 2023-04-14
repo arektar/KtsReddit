@@ -27,11 +27,10 @@ class AuthorisationFragment : BaseComposeFragment() {
 
     private lateinit var navController: NavController
     private val viewModel: MainViewModel by viewModels()
-    //private val viewBinding by viewBinding()
 
     @Composable
     override fun ComposeScreen() {
-        val authState by viewModel.uiState.collectAsState()
+        val authState by viewModel.authState.collectAsState()
         AuthView(
             ::navigateNext,
             authState,
