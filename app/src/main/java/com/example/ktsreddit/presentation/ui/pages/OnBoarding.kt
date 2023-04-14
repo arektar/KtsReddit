@@ -1,6 +1,10 @@
 package com.example.ktsreddit.presentation.ui.pages
 
+
+import BaseComposeFragment
 import android.content.res.Configuration
+import android.os.Bundle
+import android.view.View
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -13,12 +17,35 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import com.example.ktsreddit.R
 import com.example.ktsreddit.presentation.ui.theme.KtsRedditTheme
 
 
+class OnBoardingFragment : BaseComposeFragment() {
+
+
+    private lateinit var navController: NavController
+
+    @Composable
+    override fun ComposeScreen() {
+        OnBoarding(::navigateNext)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        navController = findNavController()
+    }
+
+    private fun navigateNext() {
+        navController.navigate(
+            OnBoardingFragmentDirections.actionOnBoardingFragmentToAuthorisationFragment())
+    }
+}
+
 @Composable
-fun Onboarding() {
+fun OnBoarding(navigateNext: () -> Unit) {
     val configuration = LocalConfiguration.current
     when (configuration.orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
@@ -28,7 +55,7 @@ fun Onboarding() {
                 modifier = Modifier.fillMaxSize()
             ) {
                 Content()
-                ToMainScreenButton()
+                ToMainScreenButton(navigateNext)
             }
         }
         else -> {
@@ -38,7 +65,7 @@ fun Onboarding() {
                 modifier = Modifier.fillMaxSize()
             ) {
                 Content()
-                ToMainScreenButton()
+                ToMainScreenButton(navigateNext)
             }
         }
     }
@@ -59,8 +86,8 @@ fun Content() {
 }
 
 @Composable
-fun ToMainScreenButton() {
-    Button(onClick = { /*TODO*/ }) {
+fun ToMainScreenButton(navigateNext: () -> Unit) {
+    Button(onClick = { navigateNext() }) {
         Text(stringResource(id = R.string.start_screen_next), fontSize = 25.sp)
     }
 }
@@ -69,6 +96,7 @@ fun ToMainScreenButton() {
 @Composable
 fun DefaultPreview() {
     KtsRedditTheme {
-        Onboarding()
+
+        OnBoarding {}
     }
 }

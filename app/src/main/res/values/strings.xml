@@ -2,4 +2,8 @@
     <string name="app_name">KtsReddit</string>
     <string name="start_screen_hello">Greetings, User!!!</string>
     <string name="start_screen_next">Next >>></string>
+    <string name="login">Login</string>
+    <string name="mail_input">mail</string>
+    <string name="password_input">password</string>
+
 </resources>
