@@ -1,6 +1,7 @@
 package com.example.ktsreddit.presentation.ui.models
 
 import android.util.Patterns
+import android.widget.Toast
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -52,11 +53,32 @@ class MainViewModel(
         _authState.value = newAuthState
     }
 
+    fun toggleMainListLike(item:ComplexElem){
+        val newList = _mainListState.value.toMutableList().apply {
+            val one = first {
+                it.id == item.id
+            }
+            val new:ComplexElem
+            val ind = indexOf(one)
+            if (one is ComplexElem) {
+                new = one.copy (
+                    liked = !item.liked
+                )
+            } else {
+                error("Not ComplexElem found error. Not Click not from ComplexElem.")
+            }
+            set(ind,new)
+        }.toList()
+        _mainListState.value = newList
+
+    }
+
     fun generateDefaultList():List<Item>{
+        val id = 0
         return List(20){
             when ((1..2).random()){
-                1 -> SimpleElem(it,"TestSimple")
-                2 -> ComplexElem(it,"TestSimple","Me",false)
+                1 -> SimpleElem(it,"TestSimple","TestSimple text")
+                2 -> ComplexElem(it,"TestComplex","TestComplex text","Me",false)
                 else -> error("Wrong random number")
             }
         }
@@ -75,7 +97,7 @@ data class AuthState(
     val loginIsCorrect: Boolean = false,
     val passwordIsCorrect: Boolean = false,
 ) {
-    val loginEnabled = this.loginIsCorrect && this.passwordIsCorrect
+    val loginEnabled = true //this.loginIsCorrect && this.passwordIsCorrect
 }
 
 

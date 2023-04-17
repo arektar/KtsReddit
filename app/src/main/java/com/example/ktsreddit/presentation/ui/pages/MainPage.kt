@@ -20,7 +20,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.ktsreddit.R
 import com.example.ktsreddit.presentation.ui.models.MainViewModel
-import com.example.ktsreddit.presentation.ui.pages.elements.mainPageList.Item
+import com.example.ktsreddit.presentation.ui.pages.elements.mainPageList.*
 import com.example.ktsreddit.presentation.ui.theme.KtsRedditTheme
 
 
@@ -33,7 +33,7 @@ class MainPageFragment : BaseComposeFragment() {
     @Composable
     override fun ComposeScreen() {
         val mainListState by viewModel.mainListState.collectAsState()
-        MainPage(mainListState)
+        MainPage(mainListState,viewModel::toggleMainListLike)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,7 +43,7 @@ class MainPageFragment : BaseComposeFragment() {
 }
 
 @Composable
-fun MainPage(mainListState: List<Item>) {
+fun MainPage(mainListState: List<Item>, onLikeClick: (ComplexElem)->Unit) {
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -63,7 +63,10 @@ fun MainPage(mainListState: List<Item>) {
                 key = { item -> item.id },
                 contentType = { it::class.java.name }
             ){
-
+                when (it) {
+                    is SimpleElem -> {SimpleMpItemView(it)}
+                    is ComplexElem -> {ComplexMpItemView(it,onLikeClick)}
+                }
             }
 
         }
@@ -76,7 +79,8 @@ fun MainPreview() {
     KtsRedditTheme {
         val mainListState = emptyList<Item>()
         MainPage(
-            mainListState
+            mainListState,
+            { }
         )
     }
 }
