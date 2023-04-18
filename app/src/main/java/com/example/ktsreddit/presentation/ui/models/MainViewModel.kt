@@ -25,8 +25,6 @@ class MainViewModel(
     private val _mainListState = MutableStateFlow(DEFAULT_MAIN_LIST_STATE)
     val mainListState: StateFlow<List<Item>> = _mainListState.asStateFlow()
 
-    val mainPagingList: Flow<PagingData<Item>> = pagingList().cachedIn(viewModelScope)
-
     var mainListId = 0
 
     init {
@@ -59,16 +57,15 @@ class MainViewModel(
 
     @SuppressLint("CheckResult")
     fun toggleMainListLike(changingItem: ComplexElem) {
-        /*
         val newList = _mainListState.value.toMutableList().apply {
             val one = first {
-                it.id == item.id
+                it.id == changingItem.id
             }
             val new:ComplexElem
             val ind = indexOf(one)
             if (one is ComplexElem) {
                 new = one.copy (
-                    liked = !item.liked
+                    liked = !changingItem.liked
                 )
             } else {
                 error("Not ComplexElem found error. Not Click not from ComplexElem.")
@@ -77,44 +74,6 @@ class MainViewModel(
         }.toList()
         _mainListState.value = newList
 
-
-
-        val liked = mainPagingList.map { pagingData ->
-            println("PaintingData!!!")
-            println(pagingData)
-            pagingData.filter { item ->
-                item.id == changingItem.id
-            }.map { one ->
-                    if (one is ComplexElem) {
-                        println("One!!!")
-                        println(one)
-                        one.liked = !one.liked
-                    } else {
-                        error("Not ComplexElem found error. Not Click not from ComplexElem.")
-                    }
-                }
-        }
-
-
-        mainPagingList.combine(liked) { list, likedElements ->  list.map {
-            if (it is ComplexElem)
-                it.copy(liked = true) }  }
-
-                */
-
-
-
-        mainPagingList.map { pagingData ->
-            pagingData.map { item ->
-                if (item is ComplexElem){
-                    if (item.id == changingItem.id){
-                        item.liked=!item.liked
-                    }
-
-                }
-            }
-        }.cachedIn(viewModelScope)
-        println(mainPagingList)
 
     }
 
@@ -138,17 +97,6 @@ class MainViewModel(
     }
 
 
-    fun pagingList() = Pager(
-        config = PagingConfig(
-            pageSize = MAIN_LIST_PAGE_SIZE,
-        ),
-        pagingSourceFactory = {
-            MyPagingSource(::getPage)
-        }
-    ).flow
-
-    //fun getMpListPaged(): Flow<PagingData<Item>> = pagingList().cachedIn(viewModelScope)
-
     companion object {
         val DEFAULT_AUTH_STATE = AuthState("", "")
         val DEFAULT_MAIN_LIST_STATE = emptyList<Item>()
@@ -164,34 +112,3 @@ data class AuthState(
 ) {
     val loginEnabled = true //this.loginIsCorrect && this.passwordIsCorrect
 }
-
-class MyPagingSource(
-    val getPage: (Int) -> List<Item>
-) : PagingSource<Int, Item>() {
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Item> {
-        return try {
-            val pageNumber = params.key ?: 0
-            val response = getPage(pageNumber)
-            val prevKey = if (pageNumber > 0) pageNumber - 1 else null
-            val nextKey = if (response.isNotEmpty()) pageNumber + 1 else null
-            LoadResult.Page(
-                data = response,
-                prevKey = prevKey,
-                nextKey = nextKey
-            )
-        } catch (e: IOException) {
-            LoadResult.Error(e)
-        }
-    }
-
-    override fun getRefreshKey(state: PagingState<Int, Item>): Int? {
-        return state.anchorPosition?.let {
-            state.closestPageToPosition(it)?.prevKey?.plus(1)
-                ?: state.closestPageToPosition(it)?.nextKey?.minus(1)
-        }
-    }
-}
-
-
-
-
