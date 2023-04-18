@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -18,6 +16,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.example.ktsreddit.R
 import com.example.ktsreddit.presentation.ui.models.MainViewModel
 import com.example.ktsreddit.presentation.ui.pages.elements.mainPageList.*
@@ -32,8 +33,9 @@ class MainPageFragment : BaseComposeFragment() {
 
     @Composable
     override fun ComposeScreen() {
-        val mainListState by viewModel.mainListState.collectAsState()
-        MainPage(mainListState,viewModel::toggleMainListLike)
+        //val mainListState by viewModel.mainListState.collectAsState()
+        val mainPageListPaged = viewModel.getMpListPaged().collectAsLazyPagingItems()
+        MainPage(mainPageListPaged,viewModel::toggleMainListLike)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,7 +45,7 @@ class MainPageFragment : BaseComposeFragment() {
 }
 
 @Composable
-fun MainPage(mainListState: List<Item>, onLikeClick: (ComplexElem)->Unit) {
+fun MainPage(mainPageListPaged: LazyPagingItems<Item>, onLikeClick: (ComplexElem)->Unit) {
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -59,9 +61,8 @@ fun MainPage(mainListState: List<Item>, onLikeClick: (ComplexElem)->Unit) {
 
         LazyColumn(Modifier.fillMaxSize()) {
             items(
-                items = mainListState,
-                key = { item -> item.id },
-                contentType = { it::class.java.name }
+                items = mainPageListPaged,
+                key = { it.id },
             ){
                 when (it) {
                     is SimpleElem -> {SimpleMpItemView(it)}
@@ -77,10 +78,9 @@ fun MainPage(mainListState: List<Item>, onLikeClick: (ComplexElem)->Unit) {
 @Composable
 fun MainPreview() {
     KtsRedditTheme {
-        val mainListState = emptyList<Item>()
-        MainPage(
-            mainListState,
-            { }
-        )
+        //val mainListState = emptyList<Item>()
+        //MainPage(
+        //    mainListState
+        //) { }
     }
 }
