@@ -1,5 +1,6 @@
 package com.example.ktsreddit.presentation.ui.models
 
+import android.annotation.SuppressLint
 import android.util.Patterns
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -56,6 +57,7 @@ class MainViewModel(
         _authState.value = newAuthState
     }
 
+    @SuppressLint("CheckResult")
     fun toggleMainListLike(changingItem: ComplexElem) {
         /*
         val newList = _mainListState.value.toMutableList().apply {
@@ -75,9 +77,9 @@ class MainViewModel(
         }.toList()
         _mainListState.value = newList
 
-         */
 
-        mainPagingList.map { pagingData ->
+
+        val liked = mainPagingList.map { pagingData ->
             println("PaintingData!!!")
             println(pagingData)
             pagingData.filter { item ->
@@ -91,7 +93,28 @@ class MainViewModel(
                         error("Not ComplexElem found error. Not Click not from ComplexElem.")
                     }
                 }
+        }
+
+
+        mainPagingList.combine(liked) { list, likedElements ->  list.map {
+            if (it is ComplexElem)
+                it.copy(liked = true) }  }
+
+                */
+
+
+
+        mainPagingList.map { pagingData ->
+            pagingData.map { item ->
+                if (item is ComplexElem){
+                    if (item.id == changingItem.id){
+                        item.liked=!item.liked
+                    }
+
+                }
+            }
         }.cachedIn(viewModelScope)
+        println(mainPagingList)
 
     }
 
