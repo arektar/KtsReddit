@@ -22,7 +22,7 @@ data class ComplexElem(
     val title: String,
     val text: String,
     val author: String,
-    val liked: Boolean,
+    var liked: Boolean,
 ) : Item()
 
 

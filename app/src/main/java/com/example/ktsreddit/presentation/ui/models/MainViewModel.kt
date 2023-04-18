@@ -1,7 +1,6 @@
 package com.example.ktsreddit.presentation.ui.models
 
 import android.util.Patterns
-import android.widget.Toast
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,10 +8,7 @@ import androidx.paging.*
 import com.example.ktsreddit.presentation.ui.pages.elements.mainPageList.ComplexElem
 import com.example.ktsreddit.presentation.ui.pages.elements.mainPageList.Item
 import com.example.ktsreddit.presentation.ui.pages.elements.mainPageList.SimpleElem
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -28,6 +24,8 @@ class MainViewModel(
     private val _mainListState = MutableStateFlow(DEFAULT_MAIN_LIST_STATE)
     val mainListState: StateFlow<List<Item>> = _mainListState.asStateFlow()
 
+    val mainPagingList: Flow<PagingData<Item>> = pagingList().cachedIn(viewModelScope)
+
     var mainListId = 0
 
     init {
@@ -35,7 +33,7 @@ class MainViewModel(
             _authState.value =
                 savedStateHandle.getStateFlow("auth", DEFAULT_AUTH_STATE).value
 
-            //_mainListState.value = generateDefaultList()
+            _mainListState.value = generateDefaultList(100)
         }
     }
 
@@ -58,7 +56,8 @@ class MainViewModel(
         _authState.value = newAuthState
     }
 
-    fun toggleMainListLike(item:ComplexElem){
+    fun toggleMainListLike(changingItem: ComplexElem) {
+        /*
         val newList = _mainListState.value.toMutableList().apply {
             val one = first {
                 it.id == item.id
@@ -76,29 +75,56 @@ class MainViewModel(
         }.toList()
         _mainListState.value = newList
 
+         */
+
+        mainPagingList.map { pagingData ->
+            println("PaintingData!!!")
+            println(pagingData)
+            pagingData.filter { item ->
+                item.id == changingItem.id
+            }.map { one ->
+                    if (one is ComplexElem) {
+                        println("One!!!")
+                        println(one)
+                        one.liked = !one.liked
+                    } else {
+                        error("Not ComplexElem found error. Not Click not from ComplexElem.")
+                    }
+                }
+        }.cachedIn(viewModelScope)
+
     }
 
-    fun generateDefaultList():List<Item>{
-        return List(MAIN_LIST_PAGE_SIZE){
-            mainListId+=1
-            when ((1..2).random()){
-                1 -> SimpleElem(mainListId,"TestSimple","TestSimple text")
-                2 -> ComplexElem(mainListId,"TestComplex","TestComplex text","Me",false)
+    fun generateDefaultList(count: Int): List<Item> {
+        val newList = List(count) {
+            mainListId += 1
+            when ((1..2).random()) {
+                1 -> SimpleElem(mainListId, "TestSimple", "TestSimple text")
+                2 -> ComplexElem(mainListId, "TestComplex", "TestComplex text", "Me", false)
                 else -> error("Wrong random number")
             }
         }
+        _mainListState.value = _mainListState.value.union(newList).toList()
+        return newList
+    }
+
+    fun getPage(pageNum: Int, size: Int = MAIN_LIST_PAGE_SIZE): List<Item> {
+        val start: Int = pageNum * size
+        val end = start + size
+        return mainListState.value.subList(start, end)
     }
 
 
     fun pagingList() = Pager(
-            config = PagingConfig(
-                pageSize = MAIN_LIST_PAGE_SIZE,
-            ),
-            pagingSourceFactory = {
-                MyPagingSource(::generateDefaultList)
-            }
-        ).flow
-    fun getMpListPaged(): Flow<PagingData<Item>> = pagingList().cachedIn(viewModelScope)
+        config = PagingConfig(
+            pageSize = MAIN_LIST_PAGE_SIZE,
+        ),
+        pagingSourceFactory = {
+            MyPagingSource(::getPage)
+        }
+    ).flow
+
+    //fun getMpListPaged(): Flow<PagingData<Item>> = pagingList().cachedIn(viewModelScope)
 
     companion object {
         val DEFAULT_AUTH_STATE = AuthState("", "")
@@ -117,12 +143,12 @@ data class AuthState(
 }
 
 class MyPagingSource(
-    val getPage: ()->List<Item>
+    val getPage: (Int) -> List<Item>
 ) : PagingSource<Int, Item>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Item> {
         return try {
             val pageNumber = params.key ?: 0
-            val response = getPage()
+            val response = getPage(pageNumber)
             val prevKey = if (pageNumber > 0) pageNumber - 1 else null
             val nextKey = if (response.isNotEmpty()) pageNumber + 1 else null
             LoadResult.Page(

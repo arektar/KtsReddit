@@ -34,7 +34,7 @@ class MainPageFragment : BaseComposeFragment() {
     @Composable
     override fun ComposeScreen() {
         //val mainListState by viewModel.mainListState.collectAsState()
-        val mainPageListPaged = viewModel.getMpListPaged().collectAsLazyPagingItems()
+        val mainPageListPaged = viewModel.mainPagingList.collectAsLazyPagingItems()
         MainPage(mainPageListPaged,viewModel::toggleMainListLike)
     }
 
