@@ -1,6 +1,6 @@
-package com.example.ktsreddit.presentation.ui.pages
+package com.example.ktsreddit.main
 
-import BaseComposeFragment
+import com.example.ktsreddit.common.compose.base.BaseComposeFragment
 import android.os.Bundle
 import android.view.View
 import androidx.compose.foundation.Image
@@ -19,9 +19,10 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.ktsreddit.R
-import com.example.ktsreddit.presentation.ui.models.MainViewModel
-import com.example.ktsreddit.presentation.ui.pages.elements.mainPageList.*
-import com.example.ktsreddit.presentation.ui.theme.KtsRedditTheme
+import com.example.ktsreddit.common.compose.mainlist.ComplexMpItemView
+import com.example.ktsreddit.common.compose.mainlist.SimpleMpItemView
+import com.example.ktsreddit.common.items.*
+import com.example.ktsreddit.common.compose_theme.KtsRedditTheme
 
 
 class MainPageFragment : BaseComposeFragment() {
@@ -33,7 +34,7 @@ class MainPageFragment : BaseComposeFragment() {
     @Composable
     override fun ComposeScreen() {
         val mainListState by viewModel.mainListState.collectAsState()
-        MainPage(mainListState,viewModel::toggleMainListLike)
+        MainPage(mainListState, viewModel::toggleMainListLike)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,7 +44,7 @@ class MainPageFragment : BaseComposeFragment() {
 }
 
 @Composable
-fun MainPage(mainPageListPaged: List<Item>, onLikeClick: (ComplexElem)->Unit) {
+fun MainPage(mainPageListPaged: List<Item>, onLikeClick: (ComplexElem) -> Unit) {
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -62,10 +63,14 @@ fun MainPage(mainPageListPaged: List<Item>, onLikeClick: (ComplexElem)->Unit) {
                 items = mainPageListPaged,
                 key = { item -> item.id },
                 contentType = { it::class.java.name }
-            ){
+            ) {
                 when (it) {
-                    is SimpleElem -> {SimpleMpItemView(it)}
-                    is ComplexElem -> {ComplexMpItemView(it,onLikeClick)}
+                    is SimpleElem -> {
+                        SimpleMpItemView(it)
+                    }
+                    is ComplexElem -> {
+                        ComplexMpItemView(it, onLikeClick)
+                    }
                 }
             }
 

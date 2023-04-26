@@ -1,6 +1,6 @@
-package com.example.ktsreddit.presentation.ui.pages
+package com.example.ktsreddit.auth
 
-import BaseComposeFragment
+import com.example.ktsreddit.common.compose.base.BaseComposeFragment
 import android.os.Bundle
 import android.view.View
 import androidx.compose.foundation.layout.*
@@ -19,14 +19,15 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.ktsreddit.R
-import com.example.ktsreddit.presentation.ui.models.AuthState
-import com.example.ktsreddit.presentation.ui.models.MainViewModel
-import com.example.ktsreddit.presentation.ui.theme.KtsRedditTheme
+import com.example.ktsreddit.common.model.AuthState
+import com.example.ktsreddit.common.model.AuthViewModel
+
+import com.example.ktsreddit.common.compose_theme.KtsRedditTheme
 
 class AuthorisationFragment : BaseComposeFragment() {
 
     private lateinit var navController: NavController
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: AuthViewModel by viewModels()
 
     @Composable
     override fun ComposeScreen() {
@@ -162,7 +163,7 @@ fun LoginButton(navigateNext: () -> Unit, isActive: Boolean) {
 @Composable
 fun AuthPreview() {
     KtsRedditTheme {
-        val authState = AuthState("", "")
+        val authState = AuthState()
         AuthView({},
             authState = authState,
             validateLogin = { },

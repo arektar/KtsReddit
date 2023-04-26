@@ -1,10 +1,11 @@
-package com.example.ktsreddit.presentation.ui.pages
+package com.example.ktsreddit.onboarding
 
 
-import BaseComposeFragment
+import com.example.ktsreddit.common.compose.base.BaseComposeFragment
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -15,13 +16,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.style.TextDirection.Companion.Content
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.ktsreddit.R
-import com.example.ktsreddit.presentation.ui.theme.KtsRedditTheme
+import com.example.ktsreddit.common.compose_theme.KtsRedditTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 
@@ -55,16 +55,16 @@ fun OnBoardingPager(pageCount: Int = 3, navigateNext: () -> Unit) {
     HorizontalPager(count = pageCount) { page ->
         // Our page content
         when (page) {
-            0 -> FirstOnBoarding()
-            1 -> SecondOnBoarding()
-            2 -> ThirdOnBoarding(navigateNext)
+            0 -> OnBoardingPage(R.string.start_screen_hello)
+            1 -> OnBoardingPage(R.string.start_screen_welcome)
+            2 -> FinalOnBoardingPage(navigateNext)
             else -> error("Bad page num")
         }
     }
 }
 
 @Composable
-fun FirstOnBoarding() {
+fun OnBoardingPage(@StringRes stringRes: Int) {
     val configuration = LocalConfiguration.current
     when (configuration.orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
@@ -73,7 +73,7 @@ fun FirstOnBoarding() {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxSize()
             ) {
-                Content(R.string.start_screen_hello)
+                Content(stringRes)
             }
         }
         else -> {
@@ -82,39 +82,14 @@ fun FirstOnBoarding() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxSize()
             ) {
-                Content(R.string.start_screen_hello)
+                Content(stringRes)
             }
         }
     }
 }
 
 @Composable
-fun SecondOnBoarding() {
-    val configuration = LocalConfiguration.current
-    when (configuration.orientation) {
-        Configuration.ORIENTATION_LANDSCAPE -> {
-            Row(
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                Content(R.string.start_screen_welcome)
-            }
-        }
-        else -> {
-            Column(
-                verticalArrangement = Arrangement.SpaceEvenly,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                Content(R.string.start_screen_welcome)
-            }
-        }
-    }
-}
-
-@Composable
-fun ThirdOnBoarding(navigateNext: () -> Unit) {
+fun FinalOnBoardingPage(navigateNext: () -> Unit) {
     val configuration = LocalConfiguration.current
     when (configuration.orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
@@ -142,12 +117,12 @@ fun ThirdOnBoarding(navigateNext: () -> Unit) {
 //R.string.start_screen_hello
 
 @Composable
-fun Content(string_id:Int) {
+fun Content(@StringRes stringRes: Int) {
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(text = stringResource(id = string_id), fontSize = 25.sp)
+        Text(text = stringResource(id = stringRes), fontSize = 25.sp)
         Image(
             imageVector = ImageVector.vectorResource(id = R.drawable.img_onboarding_lotus),
             contentDescription = "Lotus"
