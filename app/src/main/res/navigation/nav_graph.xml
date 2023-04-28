@@ -6,7 +6,7 @@
     app:startDestination="@id/OnBoardingFragment">
     <fragment
         android:id="@+id/OnBoardingFragment"
-        android:name="com.example.ktsreddit.presentation.ui.pages.OnBoardingFragment"
+        android:name="com.example.ktsreddit.onboarding.OnBoardingFragment"
         android:label="PersonListFragment" >
         <action
             android:id="@+id/action_OnBoardingFragment_to_AuthorisationFragment"
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/AuthorisationFragment"
-        android:name="com.example.ktsreddit.presentation.ui.pages.AuthorisationFragment"
+        android:name="com.example.ktsreddit.auth.AuthorisationFragment"
         android:label="AuthorisationFragment" >
         <action
             android:id="@+id/action_AuthorisationFragment_to_MainPageFragment"
@@ -26,7 +26,7 @@
     </fragment>
     <fragment
         android:id="@+id/MainPageFragment"
-        android:name="com.example.ktsreddit.presentation.ui.pages.MainPageFragment"
+        android:name="com.example.ktsreddit.main.MainPageFragment"
         android:label="MainPageFragment" >
     </fragment>
 </navigation>

@@ -36,10 +36,9 @@ android {
     }
     buildFeatures {
         compose true
-        viewBinding true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.2.0'
+        kotlinCompilerExtensionVersion '1.4.6'
     }
     packagingOptions {
         resources {
@@ -66,6 +65,13 @@ dependencies {
     implementation "androidx.appcompat:appcompat:1.6.1"
 
     implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
+
+    def paging_version = "3.1.1"
+    implementation "androidx.paging:paging-runtime:$paging_version"
+    implementation "androidx.paging:paging-compose:1.0.0-alpha17"
+
+    implementation "com.google.accompanist:accompanist-pager:0.22.0-rc"
+
 
 
 }

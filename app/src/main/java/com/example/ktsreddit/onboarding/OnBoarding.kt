@@ -1,10 +1,11 @@
-package com.example.ktsreddit.presentation.ui.pages
+package com.example.ktsreddit.onboarding
 
 
-import BaseComposeFragment
+import com.example.ktsreddit.common.compose.base.BaseComposeFragment
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -20,7 +21,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.ktsreddit.R
-import com.example.ktsreddit.presentation.ui.theme.KtsRedditTheme
+import com.example.ktsreddit.common.compose_theme.KtsRedditTheme
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
 
 
 class OnBoardingFragment : BaseComposeFragment() {
@@ -30,7 +33,8 @@ class OnBoardingFragment : BaseComposeFragment() {
 
     @Composable
     override fun ComposeScreen() {
-        OnBoarding(::navigateNext)
+        //OnBoarding(::navigateNext)
+        OnBoardingPager(navigateNext = ::navigateNext)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -40,12 +44,27 @@ class OnBoardingFragment : BaseComposeFragment() {
 
     private fun navigateNext() {
         navController.navigate(
-            OnBoardingFragmentDirections.actionOnBoardingFragmentToAuthorisationFragment())
+            OnBoardingFragmentDirections.actionOnBoardingFragmentToAuthorisationFragment()
+        )
+    }
+}
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun OnBoardingPager(pageCount: Int = 3, navigateNext: () -> Unit) {
+    HorizontalPager(count = pageCount) { page ->
+        // Our page content
+        when (page) {
+            0 -> OnBoardingPage(R.string.start_screen_hello)
+            1 -> OnBoardingPage(R.string.start_screen_welcome)
+            2 -> FinalOnBoardingPage(navigateNext)
+            else -> error("Bad page num")
+        }
     }
 }
 
 @Composable
-fun OnBoarding(navigateNext: () -> Unit) {
+fun OnBoardingPage(@StringRes stringRes: Int) {
     val configuration = LocalConfiguration.current
     when (configuration.orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
@@ -54,7 +73,32 @@ fun OnBoarding(navigateNext: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxSize()
             ) {
-                Content()
+                Content(stringRes)
+            }
+        }
+        else -> {
+            Column(
+                verticalArrangement = Arrangement.SpaceEvenly,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Content(stringRes)
+            }
+        }
+    }
+}
+
+@Composable
+fun FinalOnBoardingPage(navigateNext: () -> Unit) {
+    val configuration = LocalConfiguration.current
+    when (configuration.orientation) {
+        Configuration.ORIENTATION_LANDSCAPE -> {
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Content(R.string.start_screen_clicknext)
                 ToMainScreenButton(navigateNext)
             }
         }
@@ -64,20 +108,21 @@ fun OnBoarding(navigateNext: () -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxSize()
             ) {
-                Content()
+                Content(R.string.start_screen_clicknext)
                 ToMainScreenButton(navigateNext)
             }
         }
     }
 }
+//R.string.start_screen_hello
 
 @Composable
-fun Content() {
+fun Content(@StringRes stringRes: Int) {
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(text = stringResource(id = R.string.start_screen_hello), fontSize = 25.sp)
+        Text(text = stringResource(id = stringRes), fontSize = 25.sp)
         Image(
             imageVector = ImageVector.vectorResource(id = R.drawable.img_onboarding_lotus),
             contentDescription = "Lotus"
@@ -97,6 +142,6 @@ fun ToMainScreenButton(navigateNext: () -> Unit) {
 fun DefaultPreview() {
     KtsRedditTheme {
 
-        OnBoarding {}
+        OnBoardingPager {}
     }
 }
