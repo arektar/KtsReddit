@@ -1,4 +1,4 @@
-package com.example.ktsreddit.common.compose.mainlist
+package com.example.ktsreddit.presentation.common.compose.mainlist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -13,10 +13,10 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.ktsreddit.R
-import com.example.ktsreddit.common.compose.mainlist.components.MainListCard
-import com.example.ktsreddit.common.compose_theme.KtsRedditTheme
-import com.example.ktsreddit.common.compose_theme.myColors
-import com.example.ktsreddit.common.items.ComplexElem
+import com.example.ktsreddit.presentation.common.compose.mainlist.components.MainListCard
+import com.example.ktsreddit.presentation.common.compose_theme.KtsRedditTheme
+import com.example.ktsreddit.presentation.common.compose_theme.myColors
+import com.example.ktsreddit.presentation.common.items.ComplexElem
 
 
 @Composable

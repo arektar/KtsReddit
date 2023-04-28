@@ -8,4 +8,5 @@
     <string name="login">Вход</string>
     <string name="mail_input">мэйл</string>
     <string name="password_input">пароль</string>
+    <string name="auth_failed">Аутентификация не выполнена</string>
 </resources>

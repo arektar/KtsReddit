@@ -1,4 +1,4 @@
-package com.example.ktsreddit.common.items
+package com.example.ktsreddit.presentation.common.items
 
 abstract class Item{
     abstract val id:Int

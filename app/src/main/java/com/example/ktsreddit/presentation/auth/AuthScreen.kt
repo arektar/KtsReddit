@@ -1,8 +1,10 @@
-package com.example.ktsreddit.auth
+package com.example.ktsreddit.presentation.auth
 
-import com.example.ktsreddit.common.compose.base.BaseComposeFragment
+import android.content.Intent
+import com.example.ktsreddit.presentation.common.compose.base.BaseComposeFragment
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -19,21 +21,28 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.ktsreddit.R
-import com.example.ktsreddit.common.model.AuthState
-import com.example.ktsreddit.common.model.AuthViewModel
 
-import com.example.ktsreddit.common.compose_theme.KtsRedditTheme
+import com.example.ktsreddit.presentation.common.compose_theme.KtsRedditTheme
+import com.kts.github.utils.launchAndCollectIn
+import com.kts.github.utils.toast
+import net.openid.appauth.AuthorizationException
+import net.openid.appauth.AuthorizationResponse
 
 class AuthorisationFragment : BaseComposeFragment() {
 
     private lateinit var navController: NavController
     private val viewModel: AuthViewModel by viewModels()
 
+    private val getAuthResponse = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        val dataIntent = it.data ?: return@registerForActivityResult
+        handleAuthResponseIntent(dataIntent)
+    }
+
     @Composable
     override fun ComposeScreen() {
         val authState by viewModel.authState.collectAsState()
         AuthView(
-            ::navigateNext,
+            viewModel::openLoginPage,
             authState,
             validateLogin = viewModel::validateLogin,
             validatePassword = viewModel::validatePassword
@@ -42,6 +51,7 @@ class AuthorisationFragment : BaseComposeFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bindViewModel()
         navController = findNavController()
     }
 
@@ -49,6 +59,49 @@ class AuthorisationFragment : BaseComposeFragment() {
         navController.navigate(
             AuthorisationFragmentDirections.actionAuthorisationFragmentToMainPageFragment()
         )
+    }
+
+    private fun bindViewModel() {
+        //binding.loginButton.setOnClickListener { viewModel.openLoginPage() }
+        viewModel.loadingFlow.launchAndCollectIn(viewLifecycleOwner) {
+            //updateIsLoading(it)
+        }
+        viewModel.openAuthPageFlow.launchAndCollectIn(viewLifecycleOwner) {
+            openAuthPage(it)
+        }
+        viewModel.toastFlow.launchAndCollectIn(viewLifecycleOwner) {
+            toast(it)
+        }
+        viewModel.authSuccessFlow.launchAndCollectIn(viewLifecycleOwner) {
+            //findNavController().navigate(AuthFragmentDirections.actionAuthFragmentToRepositoryListFragment())
+            navigateNext()
+        }
+    }
+
+    /*private fun updateIsLoading(isLoading: Boolean) = with(binding) {
+        loginButton.isVisible = !isLoading
+        loginProgress.isVisible = isLoading
+    }
+
+     */
+
+    private fun openAuthPage(intent: Intent) {
+        getAuthResponse.launch(intent)
+    }
+
+    private fun handleAuthResponseIntent(intent: Intent) {
+        // пытаемся получить ошибку из ответа. null - если все ок
+        val exception = AuthorizationException.fromIntent(intent)
+        // пытаемся получить запрос для обмена кода на токен, null - если произошла ошибка
+        val tokenExchangeRequest = AuthorizationResponse.fromIntent(intent)
+            ?.createTokenExchangeRequest()
+        when {
+            // авторизация завершались ошибкой
+            exception != null -> viewModel.onAuthCodeFailed(exception)
+            // авторизация прошла успешно, меняем код на токен
+            tokenExchangeRequest != null ->
+                viewModel.onAuthCodeReceived(tokenExchangeRequest)
+        }
     }
 
 }

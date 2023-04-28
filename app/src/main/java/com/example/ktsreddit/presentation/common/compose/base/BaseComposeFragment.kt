@@ -1,4 +1,4 @@
-package com.example.ktsreddit.common.compose.base
+package com.example.ktsreddit.presentation.common.compose.base
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavHostController
-import com.example.ktsreddit.common.compose_theme.KtsRedditTheme
+import com.example.ktsreddit.presentation.common.compose_theme.KtsRedditTheme
 
 abstract class BaseComposeFragment : Fragment() {
 

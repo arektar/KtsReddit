@@ -1,7 +1,7 @@
-package com.example.ktsreddit.onboarding
+package com.example.ktsreddit.presentation.onboarding
 
 
-import com.example.ktsreddit.common.compose.base.BaseComposeFragment
+import com.example.ktsreddit.presentation.common.compose.base.BaseComposeFragment
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.ktsreddit.R
-import com.example.ktsreddit.common.compose_theme.KtsRedditTheme
+import com.example.ktsreddit.presentation.common.compose_theme.KtsRedditTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 

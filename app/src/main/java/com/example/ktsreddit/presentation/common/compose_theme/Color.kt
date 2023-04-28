@@ -1,4 +1,4 @@
-package com.example.ktsreddit.common.compose_theme
+package com.example.ktsreddit.presentation.common.compose_theme
 
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors

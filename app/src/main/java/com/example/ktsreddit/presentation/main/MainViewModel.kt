@@ -1,12 +1,12 @@
-package com.example.ktsreddit.main
+package com.example.ktsreddit.presentation.main
 
 import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
-import com.example.ktsreddit.common.items.ComplexElem
-import com.example.ktsreddit.common.items.Item
-import com.example.ktsreddit.common.items.SimpleElem
+import com.example.ktsreddit.presentation.common.items.ComplexElem
+import com.example.ktsreddit.presentation.common.items.Item
+import com.example.ktsreddit.presentation.common.items.SimpleElem
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 

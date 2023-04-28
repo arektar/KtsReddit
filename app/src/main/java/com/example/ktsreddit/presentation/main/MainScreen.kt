@@ -1,6 +1,6 @@
-package com.example.ktsreddit.main
+package com.example.ktsreddit.presentation.main
 
-import com.example.ktsreddit.common.compose.base.BaseComposeFragment
+import com.example.ktsreddit.presentation.common.compose.base.BaseComposeFragment
 import android.os.Bundle
 import android.view.View
 import androidx.compose.foundation.Image
@@ -19,10 +19,12 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.ktsreddit.R
-import com.example.ktsreddit.common.compose.mainlist.ComplexMpItemView
-import com.example.ktsreddit.common.compose.mainlist.SimpleMpItemView
-import com.example.ktsreddit.common.items.*
-import com.example.ktsreddit.common.compose_theme.KtsRedditTheme
+import com.example.ktsreddit.presentation.common.compose.mainlist.ComplexMpItemView
+import com.example.ktsreddit.presentation.common.compose.mainlist.SimpleMpItemView
+import com.example.ktsreddit.presentation.common.compose_theme.KtsRedditTheme
+import com.example.ktsreddit.presentation.common.items.ComplexElem
+import com.example.ktsreddit.presentation.common.items.Item
+import com.example.ktsreddit.presentation.common.items.SimpleElem
 
 
 class MainPageFragment : BaseComposeFragment() {
