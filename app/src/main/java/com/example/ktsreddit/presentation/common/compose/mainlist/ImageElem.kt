@@ -17,10 +17,12 @@ import com.example.ktsreddit.presentation.common.compose.mainlist.components.Mai
 import com.example.ktsreddit.presentation.common.compose_theme.KtsRedditTheme
 import com.example.ktsreddit.presentation.common.compose_theme.myColors
 import com.example.ktsreddit.presentation.common.items.ComplexElem
+import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
+import com.swallow.cracker.ui.model.RedditListItemImage
 
 
 @Composable
-fun ComplexMpItemView(elem: ComplexElem, onLikeClick: (ComplexElem) -> Unit) {
+fun ImageMpItemView(elem: RedditListItemImage, onLikeClick: (RedditItem) -> Unit) {
 
     val textsMod = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
     val columnMod = Modifier.padding(5.dp)
@@ -35,10 +37,10 @@ fun ComplexMpItemView(elem: ComplexElem, onLikeClick: (ComplexElem) -> Unit) {
                 Text(text = elem.author, modifier = textsMod)
             }
             Divider(color = MaterialTheme.myColors.cardMpBorder, thickness = 1.dp)
-            Text(text = elem.text, modifier = textsMod)
+            Text(text = elem.title, modifier = textsMod)
             Divider(color = MaterialTheme.myColors.cardMpBorder, thickness = 1.dp)
             IconButton(onClick = { onLikeClick(elem) }) {
-                if (elem.liked) {
+                if (elem.likes == true) {
                     Image(
                         imageVector = ImageVector.vectorResource(R.drawable.baseline_thumb_up_active_24),
                         contentDescription = "",
@@ -55,14 +57,17 @@ fun ComplexMpItemView(elem: ComplexElem, onLikeClick: (ComplexElem) -> Unit) {
     }
 }
 
+/*
 @Preview(showBackground = true)
 @Composable
-fun ComplexMpItemPreview() {
+fun SimpleMpItemPreview() {
     val defaultElem = ComplexElem(0, "Test", "Test", "Test", false)
     KtsRedditTheme {
-        ComplexMpItemView(
+        ImageMpItemView(
             elem = defaultElem,
             {}
         )
     }
 }
+
+ */

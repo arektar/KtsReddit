@@ -46,23 +46,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
 
 
-    fun validateLogin(login: String) {
-        val loginIsCorrect = Patterns.EMAIL_ADDRESS.matcher(login).matches()
-        val newAuthState = _authState.value.copy(
-            login = login,
-            loginIsCorrect = loginIsCorrect
-        )
-        _authState.value = newAuthState
-    }
-
-    fun validatePassword(password: String) {
-        val passwordIsCorrect = password.length >= 8
-        val newAuthState = _authState.value.copy(
-            password = password,
-            passwordIsCorrect = passwordIsCorrect
-        )
-        _authState.value = newAuthState
-    }
 
     fun onAuthCodeFailed(exception: AuthorizationException) {
         toastEventChannel.trySendBlocking(R.string.auth_failed)

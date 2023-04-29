@@ -43,7 +43,10 @@ object AppAuth {
         tokenRequest: TokenRequest,
     ): TokensModel {
         return suspendCoroutine { continuation ->
-            authService.performTokenRequest(tokenRequest, getClientAuthentication()) { response, ex ->
+            authService.performTokenRequest(
+                tokenRequest,
+                getClientAuthentication()
+            ) { response, ex ->
                 when {
                     response != null -> {
                         //получение токена произошло успешно
@@ -55,7 +58,9 @@ object AppAuth {
                         continuation.resumeWith(Result.success(tokens))
                     }
                     //получение токенов произошло неуспешно, показываем ошибку
-                    ex != null -> { continuation.resumeWith(Result.failure(ex)) }
+                    ex != null -> {
+                        continuation.resumeWith(Result.failure(ex))
+                    }
                     else -> error("unreachable")
                 }
             }
@@ -68,7 +73,7 @@ object AppAuth {
 
     private object AuthConfig {
         const val AUTH_URI = "https://ssl.reddit.com/api/v1/authorize.compact"
-        const val TOKEN_URI= "https://ssl.reddit.com/api/v1/access_token"
+        const val TOKEN_URI = "https://ssl.reddit.com/api/v1/access_token"
         const val RESPONSE_TYPE = ResponseTypeValues.CODE
         const val SCOPE = "read identity vote save"
 

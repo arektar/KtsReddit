@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id "androidx.navigation.safeargs.kotlin"
+    id 'kotlin-parcelize'
 }
 
 android {
@@ -63,10 +64,11 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
 
 
-    def lifecycleVersion = '2.4.0'
+    def lifecycleVersion = '2.6.1'
 
     //ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:$lifecycleVersion"
     implementation "androidx.fragment:fragment-ktx:1.4.1"
 
 
@@ -103,7 +105,12 @@ dependencies {
     //AppAuth
     implementation 'net.openid:appauth:0.9.1'
 
+    //Timber
     implementation 'com.jakewharton.timber:timber:5.0.1'
+
+    // pretty time
+    implementation 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
+
 
 
 

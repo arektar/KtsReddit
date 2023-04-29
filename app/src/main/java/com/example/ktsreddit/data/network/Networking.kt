@@ -1,6 +1,7 @@
 package com.kts.github.data.network
 
 import android.content.Context
+import com.example.ktsreddit.data.network.RedditApi
 import com.kts.github.data.auth.TokenStorage
 
 import net.openid.appauth.AuthorizationService
@@ -16,8 +17,8 @@ object Networking {
     private var okhttpClient: OkHttpClient? = null
     private var retrofit: Retrofit? = null
 
-    //val githubApi: GithubApi
-    //    get() = retrofit?.create() ?: error("retrofit is not initialized")
+    val redditApiOAuth: RedditApi
+        get() = retrofit?.create() ?: error("retrofit is not initialized")
 
     fun init(context: Context) {
         okhttpClient = OkHttpClient.Builder()
@@ -32,10 +33,11 @@ object Networking {
             .build()
 
         retrofit = Retrofit.Builder()
-            .baseUrl("https://api.github.com/")
+            .baseUrl("https://oauth.reddit.com/")
             .addConverterFactory(MoshiConverterFactory.create())
             .client(okhttpClient!!)
             .build()
     }
+
 
 }

@@ -19,12 +19,15 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.ktsreddit.R
-import com.example.ktsreddit.presentation.common.compose.mainlist.ComplexMpItemView
+import com.example.ktsreddit.presentation.common.compose.mainlist.ImageMpItemView
 import com.example.ktsreddit.presentation.common.compose.mainlist.SimpleMpItemView
 import com.example.ktsreddit.presentation.common.compose_theme.KtsRedditTheme
 import com.example.ktsreddit.presentation.common.items.ComplexElem
 import com.example.ktsreddit.presentation.common.items.Item
-import com.example.ktsreddit.presentation.common.items.SimpleElem
+import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
+import com.example.ktsreddit.presentation.main.MainViewModel.Companion.DEFAULT_POSTS_FLOW
+import com.swallow.cracker.ui.model.RedditListItemImage
+import com.swallow.cracker.ui.model.RedditListSimpleItem
 
 
 class MainPageFragment : BaseComposeFragment() {
@@ -36,7 +39,8 @@ class MainPageFragment : BaseComposeFragment() {
     @Composable
     override fun ComposeScreen() {
         val mainListState by viewModel.mainListState.collectAsState()
-        MainPage(mainListState, viewModel::toggleMainListLike)
+        val posts by viewModel.posts.collectAsState(DEFAULT_POSTS_FLOW)
+        MainPage(posts, {})
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,8 +49,9 @@ class MainPageFragment : BaseComposeFragment() {
     }
 }
 
+
 @Composable
-fun MainPage(mainPageListPaged: List<Item>, onLikeClick: (ComplexElem) -> Unit) {
+fun MainPage(mainPageListPaged: List<RedditItem>, onLikeClick: (RedditItem) -> Unit) {
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -67,11 +72,11 @@ fun MainPage(mainPageListPaged: List<Item>, onLikeClick: (ComplexElem) -> Unit) 
                 contentType = { it::class.java.name }
             ) {
                 when (it) {
-                    is SimpleElem -> {
-                        SimpleMpItemView(it)
+                    is RedditListSimpleItem -> {
+                        SimpleMpItemView(it,onLikeClick)
                     }
-                    is ComplexElem -> {
-                        ComplexMpItemView(it, onLikeClick)
+                    is RedditListItemImage -> {
+                        ImageMpItemView(it, onLikeClick)
                     }
                 }
             }
@@ -79,7 +84,7 @@ fun MainPage(mainPageListPaged: List<Item>, onLikeClick: (ComplexElem) -> Unit) 
         }
     }
 }
-
+/*
 @Preview(showBackground = true)
 @Composable
 fun MainPreview() {
@@ -90,3 +95,5 @@ fun MainPreview() {
         ) { }
     }
 }
+
+ */
