@@ -15,18 +15,8 @@ class MainViewModel(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-
-    //private val _mainListState: SaveableMutableSaveStateFlow<MutableList<RedditItem>> = SaveableMutableSaveStateFlow(savedStateHandle,MAIN_LIST_SUBREDDIT_KEY, DEFAULT_MAIN_LIST_STATE)
-
-    //val mainListState: SaveableMutableSaveStateFlow<MutableList<RedditItem>> = SaveableMutableSaveStateFlow(savedStateHandle,MAIN_LIST_SUBREDDIT_KEY, DEFAULT_MAIN_LIST_STATE)
-    //savedStateHandle.getStateFlow(MAIN_LIST_SUBREDDIT_KEY, DEFAULT_MAIN_LIST_STATE)
-    //val mainListState: StateFlow<List<RedditItem>> = _mainListState.asStateFlow()
     val mainListState: StateFlow<List<RedditItem>> =
         savedStateHandle.getStateFlow(MAIN_LIST_SUBREDDIT_KEY, DEFAULT_MAIN_LIST_STATE)
-
-    //val mainListState:MutableStateFlow
-
-    //val mainListState = _mainListState.asStateFlow()
 
 
     val queryFlow: StateFlow<QuerySubreddit> =
@@ -56,33 +46,67 @@ class MainViewModel(
 
     @SuppressLint("CheckResult")
     fun toggleMainListLike(changingItem: RedditItem) {
-        sendPostLike(changingItem)
-        setLikeInList(changingItem)
+        val like = when (changingItem.getLikeStatus()) {
+            false -> null
+            null -> true
+            true -> null
+        }
+        val plusScore = when (changingItem.getLikeStatus()) {
+            false -> 1
+            null -> 1
+            true -> -1
+        }
+        val likeVote = when (changingItem.getLikeStatus()) {
+            false -> 0
+            null -> 1
+            true -> 0
+        }
+        sendPostLike(changingItem, likeVote)
+        setLikeInList(changingItem, like, plusScore)
 
     }
 
-    private fun sendPostLike(changingItem: RedditItem) {
-        val like = if (changingItem.getLikeStatus() != true) 1 else 0
+    @SuppressLint("CheckResult")
+    fun toggleMainListDislike(changingItem: RedditItem) {
+        val like = when (changingItem.getLikeStatus()) {
+            false -> null
+            null -> false
+            true -> null
+        }
+        val plusScore = when (changingItem.getLikeStatus()) {
+            false -> 1
+            null -> -1
+            true -> -1
+        }
+        val likeVote = when (changingItem.getLikeStatus()) {
+            false -> 0
+            null -> 1
+            true -> 0
+        }
+        sendPostLike(changingItem, likeVote)
+
+        setLikeInList(changingItem, like, plusScore)
+
+    }
+
+    private fun sendPostLike(changingItem: RedditItem, like: Int) {
         viewModelScope.launch {
             val response = repository.votePost(like, changingItem.id())
             println(response)
         }
     }
 
-    private fun setLikeInList(changingItem: RedditItem) {
+    private fun setLikeInList(changingItem: RedditItem, like: Boolean?, plusScore: Int) {
         val changingList = mainListState.value.toMutableList()
 
         val elem = changingList.first { it.id == changingItem.id }
         val index = changingList.indexOf(elem)
-        val status = elem.getLikeStatus() != true
-        val new = elem.setLikeStatus(status)
-
-        //val newList = mainListState.value.set(index, new)
+        val new = elem.setLikeStatus(like)
+        new.plusScore(plusScore)
 
         changingList[index] = new
         println(changingList)
 
-        //_mainListState.value = changingList
         savedStateHandle[MAIN_LIST_SUBREDDIT_KEY] = changingList.toList()
     }
 
@@ -90,7 +114,6 @@ class MainViewModel(
     companion object {
         val DEFAULT_MAIN_LIST_STATE = mutableListOf<RedditItem>()
 
-        val DEFAULT_POSTS_FLOW = emptyList<RedditItem>()
         private const val QUERY_SUBREDDIT = "QUERY_SUBREDDIT"
         private const val MAIN_LIST_SUBREDDIT_KEY = "MAIN_LIST_SUBREDDIT"
         val DEFAULT_REDDIT_QUERY = QuerySubreddit("Popular", "top", "20")

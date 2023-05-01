@@ -16,7 +16,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -57,7 +59,7 @@ fun OnBoardingPager(pageCount: Int = 3, navigateNext: () -> Unit) {
         when (page) {
             0 -> OnBoardingPage(R.string.start_screen_hello)
             1 -> OnBoardingPage(R.string.start_screen_welcome)
-            2 -> FinalOnBoardingPage(navigateNext)
+            2 -> FinalOnBoardingPage(R.string.start_screen_clicknext, navigateNext)
             else -> error("Bad page num")
         }
     }
@@ -89,7 +91,7 @@ fun OnBoardingPage(@StringRes stringRes: Int) {
 }
 
 @Composable
-fun FinalOnBoardingPage(navigateNext: () -> Unit) {
+fun FinalOnBoardingPage(@StringRes stringRes: Int, navigateNext: () -> Unit) {
     val configuration = LocalConfiguration.current
     when (configuration.orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
@@ -98,7 +100,7 @@ fun FinalOnBoardingPage(navigateNext: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxSize()
             ) {
-                Content(R.string.start_screen_clicknext)
+                Content(stringRes)
                 ToMainScreenButton(navigateNext)
             }
         }
@@ -108,7 +110,7 @@ fun FinalOnBoardingPage(navigateNext: () -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxSize()
             ) {
-                Content(R.string.start_screen_clicknext)
+                Content(stringRes)
                 ToMainScreenButton(navigateNext)
             }
         }
@@ -118,11 +120,17 @@ fun FinalOnBoardingPage(navigateNext: () -> Unit) {
 
 @Composable
 fun Content(@StringRes stringRes: Int) {
+    val defaultTextsMod = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(text = stringResource(id = stringRes), fontSize = 25.sp)
+        Text(
+            text = stringResource(id = stringRes),
+            fontSize = 25.sp,
+            modifier = defaultTextsMod,
+            textAlign = TextAlign.Center
+        )
         Image(
             imageVector = ImageVector.vectorResource(id = R.drawable.img_onboarding_lotus),
             contentDescription = "Lotus"

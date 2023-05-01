@@ -1,6 +1,5 @@
 package com.example.ktsreddit.data.network
 
-import android.content.Context
 import com.kts.github.data.auth.TokenStorage
 
 import okhttp3.Interceptor
@@ -40,5 +39,6 @@ object Networking {
         .build()
 
     val redditApiOAuth: RedditApi = retrofitOAuth.create()
+
 }
 

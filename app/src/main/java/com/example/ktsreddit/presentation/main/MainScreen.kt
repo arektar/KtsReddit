@@ -14,12 +14,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.ktsreddit.R
 import com.example.ktsreddit.presentation.common.compose.mainlist.ImageMpItemView
 import com.example.ktsreddit.presentation.common.compose.mainlist.SimpleMpItemView
+import com.example.ktsreddit.presentation.common.compose_theme.KtsRedditTheme
 import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
 import com.example.ktsreddit.presentation.common.items.reddit.RedditListItemImage
 import com.example.ktsreddit.presentation.common.items.reddit.RedditListSimpleItem
@@ -34,7 +36,7 @@ class MainPageFragment : BaseComposeFragment() {
     @Composable
     override fun ComposeScreen() {
         val mainListState by viewModel.mainListState.collectAsState()
-        MainPage(mainListState, viewModel::toggleMainListLike)
+        MainPage(mainListState, viewModel::toggleMainListLike, viewModel::toggleMainListDislike)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,7 +47,11 @@ class MainPageFragment : BaseComposeFragment() {
 
 
 @Composable
-fun MainPage(mainPageListPaged: List<RedditItem>, onLikeClick: (RedditItem) -> Unit) {
+fun MainPage(
+    mainPageListPaged: List<RedditItem>,
+    onLikeClick: (RedditItem) -> Unit,
+    onDislikeClick: (RedditItem) -> Unit
+) {
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -67,10 +73,10 @@ fun MainPage(mainPageListPaged: List<RedditItem>, onLikeClick: (RedditItem) -> U
             ) {
                 when (it) {
                     is RedditListSimpleItem -> {
-                        SimpleMpItemView(it,onLikeClick)
+                        SimpleMpItemView(it, onLikeClick, onDislikeClick)
                     }
                     is RedditListItemImage -> {
-                        ImageMpItemView(it, onLikeClick)
+                        ImageMpItemView(it, onLikeClick, onDislikeClick)
                     }
                 }
             }
@@ -78,16 +84,16 @@ fun MainPage(mainPageListPaged: List<RedditItem>, onLikeClick: (RedditItem) -> U
         }
     }
 }
-/*
+
 @Preview(showBackground = true)
 @Composable
 fun MainPreview() {
     KtsRedditTheme {
-        val mainListState = emptyList<Item>()
+        val mainListState = emptyList<RedditItem>()
         MainPage(
-            mainListState
-        ) { }
+            mainListState,
+            { }, { }
+        )
     }
 }
 
- */
