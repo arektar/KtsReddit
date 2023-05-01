@@ -5,13 +5,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ktsreddit.data.RedditRepository
+
 import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
-import com.example.ktsreddit.presentation.common.utils.SaveableMutableSaveStateFlow
-import com.swallow.cracker.ui.model.QuerySubreddit
-import kotlinx.coroutines.Dispatchers
+import com.example.ktsreddit.presentation.common.items.reddit.QuerySubreddit
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
 
 class MainViewModel(
     private val savedStateHandle: SavedStateHandle,
@@ -46,6 +44,8 @@ class MainViewModel(
             }.onEach {
                 savedStateHandle[MAIN_LIST_SUBREDDIT_KEY] = it
             }.collect()
+
+            repository.getModHash()
         }
     }
 
@@ -56,7 +56,20 @@ class MainViewModel(
 
     @SuppressLint("CheckResult")
     fun toggleMainListLike(changingItem: RedditItem) {
+        sendPostLike(changingItem)
+        setLikeInList(changingItem)
 
+    }
+
+    private fun sendPostLike(changingItem: RedditItem) {
+        val like = if (changingItem.getLikeStatus() != true) 1 else 0
+        viewModelScope.launch {
+            val response = repository.votePost(like, changingItem.id())
+            println(response)
+        }
+    }
+
+    private fun setLikeInList(changingItem: RedditItem) {
         val changingList = mainListState.value.toMutableList()
 
         val elem = changingList.first { it.id == changingItem.id }

@@ -56,6 +56,7 @@ object AppAuth {
                             idToken = response.idToken.orEmpty()
                         )
                         continuation.resumeWith(Result.success(tokens))
+
                     }
                     //получение токенов произошло неуспешно, показываем ошибку
                     ex != null -> {
@@ -67,6 +68,8 @@ object AppAuth {
         }
     }
 
+    //suspend fun performModHashRequestSuspend
+
     private fun getClientAuthentication(): ClientAuthentication {
         return ClientSecretBasic(CLIENT_SECRET)
     }
@@ -75,7 +78,7 @@ object AppAuth {
         const val AUTH_URI = "https://ssl.reddit.com/api/v1/authorize.compact"
         const val TOKEN_URI = "https://ssl.reddit.com/api/v1/access_token"
         const val RESPONSE_TYPE = ResponseTypeValues.CODE
-        const val SCOPE = "read identity vote save"
+        const val SCOPE = "vote read identity save"
 
         const val CLIENT_ID = "GcNyb2zCGbTElwU78yCiXA"
         const val CLIENT_SECRET = ""

@@ -1,17 +1,13 @@
 package com.example.ktsreddit.data
 
 import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
-import com.kts.github.data.network.Networking
+import com.example.ktsreddit.data.network.Networking
 import com.swallow.cracker.data.model.RedditMapper
-import com.swallow.cracker.ui.model.QuerySubreddit
-import kotlinx.coroutines.flow.*
 import retrofit2.Response
 
 class RedditRepository {
 
-
-
-
+    var modHash = ""
 
     suspend fun simpleGetSubreddit(
         subreddit: String,
@@ -34,6 +30,14 @@ class RedditRepository {
         return checkNotNull(response.body()).data.children.map { RedditMapper.mapApiToUi(it.data) }
     }
 
+    suspend fun getModHash(){
+        val response = getUserInfo()
+        val data = response.body()
+        println(data)
+        modHash = checkNotNull(response.body()).toString()
+        println(modHash)
+    }
+
 
 
 
@@ -45,8 +49,12 @@ class RedditRepository {
         return Networking.redditApiOAuth.unSavedPost(id = id)
     }
 
+    suspend fun getUserInfo(): Response<Unit> {
+        return Networking.redditApiOAuth.getMe()
+    }
+
     suspend fun votePost(dir: Int, id: String): Response<Unit> {
-        return Networking.redditApiOAuth.votePost(dir = dir, id = id)
+        return Networking.redditApiOAuth.votePost(dir = dir.toString(), id = id)
     }
 
     companion object {

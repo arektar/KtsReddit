@@ -1,10 +1,9 @@
-package com.kts.github.data.network
+package com.example.ktsreddit.data.network
 
 import android.content.Context
-import com.example.ktsreddit.data.network.RedditApi
 import com.kts.github.data.auth.TokenStorage
 
-import net.openid.appauth.AuthorizationService
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -14,30 +13,32 @@ import timber.log.Timber
 
 object Networking {
 
-    private var okhttpClient: OkHttpClient? = null
-    private var retrofit: Retrofit? = null
+    private var okhttpClientOauth: OkHttpClient =
+        OkHttpClient.Builder().addInterceptor(Interceptor { chain ->
+            val original = chain.request()
+            val builder = original.newBuilder()
 
-    val redditApiOAuth: RedditApi
-        get() = retrofit?.create() ?: error("retrofit is not initialized")
+            if (TokenStorage.accessToken != null) {
+                builder
+                    .addHeader("Authorization", "bearer " + TokenStorage.accessToken)
+                    .addHeader("User-Agent", "android:com.arektar.ktsRaddit:v1.0.0 (by u/arektar)")
+            }
 
-    fun init(context: Context) {
-        okhttpClient = OkHttpClient.Builder()
-            .addNetworkInterceptor(
-                HttpLoggingInterceptor {
-                    Timber.tag("Network").d(it)
-                }
-                    .setLevel(HttpLoggingInterceptor.Level.BODY)
-            )
-            .addNetworkInterceptor(AuthorizationInterceptor())
-            .addNetworkInterceptor(AuthorizationFailedInterceptor(AuthorizationService(context), TokenStorage))
-            .build()
+            val request = builder.method(original.method, original.body)
+                .build()
+            chain.proceed(request)
+        }).addNetworkInterceptor(
+            HttpLoggingInterceptor {
+                Timber.tag("Network").d(it)
+            }.setLevel(HttpLoggingInterceptor.Level.BODY)
+        ).build()
 
-        retrofit = Retrofit.Builder()
-            .baseUrl("https://oauth.reddit.com/")
-            .addConverterFactory(MoshiConverterFactory.create())
-            .client(okhttpClient!!)
-            .build()
-    }
+    private val retrofitOAuth = Retrofit.Builder()
+        .client(okhttpClientOauth)
+        .baseUrl("https://oauth.reddit.com/")
+        .addConverterFactory(MoshiConverterFactory.create())
+        .build()
 
-
+    val redditApiOAuth: RedditApi = retrofitOAuth.create()
 }
+

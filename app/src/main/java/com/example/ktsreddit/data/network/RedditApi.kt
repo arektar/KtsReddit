@@ -33,8 +33,13 @@ interface RedditApi {
     @FormUrlEncoded
     @POST("api/vote")
     suspend fun votePost (
-        @Field("dir") dir: Int,
-        @Field("id") id: String
+        @Field("dir") dir: String,
+        @Field("id") id: String,
+    ): Response<Unit>
+
+
+    @GET("api/v1/me.json")
+    suspend fun getMe (
     ): Response<Unit>
 
 }
