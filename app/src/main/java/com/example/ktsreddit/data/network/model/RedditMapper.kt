@@ -2,8 +2,8 @@ package com.swallow.cracker.data.model
 
 import com.example.ktsreddit.data.network.model.RedditNewsDataResponse
 import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
-import com.swallow.cracker.ui.model.RedditListItemImage
-import com.swallow.cracker.ui.model.RedditListSimpleItem
+import com.example.ktsreddit.presentation.common.items.reddit.RedditListItemImage
+import com.example.ktsreddit.presentation.common.items.reddit.RedditListSimpleItem
 
 object RedditMapper {
     fun mapApiToUi(item: RedditNewsDataResponse): RedditItem {

@@ -1,13 +1,12 @@
-package com.swallow.cracker.ui.model
+package com.example.ktsreddit.presentation.common.items.reddit
 
 import android.os.Parcelable
-import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
-import com.swallow.cracker.data.model.RedditChildrenPreview
+import com.example.ktsreddit.data.network.model.RedditChildrenPreview
 import com.swallow.cracker.utils.convertLongToTime
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class RedditListItemImage(
+data class RedditListItemImage(
     override var id: String,
     var t3_id: String,
     var author: String,

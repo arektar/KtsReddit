@@ -4,88 +4,84 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.*
 import com.example.ktsreddit.data.RedditRepository
-import com.example.ktsreddit.presentation.common.items.ComplexElem
-import com.example.ktsreddit.presentation.common.items.Item
-import com.example.ktsreddit.presentation.common.items.SimpleElem
 import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
+import com.example.ktsreddit.presentation.common.utils.SaveableMutableSaveStateFlow
 import com.swallow.cracker.ui.model.QuerySubreddit
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 
 class MainViewModel(
-    savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
 
-    private val _mainListState = MutableStateFlow(DEFAULT_MAIN_LIST_STATE)
-    val mainListState: StateFlow<List<Item>> = _mainListState.asStateFlow()
+    //private val _mainListState: SaveableMutableSaveStateFlow<MutableList<RedditItem>> = SaveableMutableSaveStateFlow(savedStateHandle,MAIN_LIST_SUBREDDIT_KEY, DEFAULT_MAIN_LIST_STATE)
+
+    //val mainListState: SaveableMutableSaveStateFlow<MutableList<RedditItem>> = SaveableMutableSaveStateFlow(savedStateHandle,MAIN_LIST_SUBREDDIT_KEY, DEFAULT_MAIN_LIST_STATE)
+    //savedStateHandle.getStateFlow(MAIN_LIST_SUBREDDIT_KEY, DEFAULT_MAIN_LIST_STATE)
+    //val mainListState: StateFlow<List<RedditItem>> = _mainListState.asStateFlow()
+    val mainListState: StateFlow<List<RedditItem>> =
+        savedStateHandle.getStateFlow(MAIN_LIST_SUBREDDIT_KEY, DEFAULT_MAIN_LIST_STATE)
+
+    //val mainListState:MutableStateFlow
+
+    //val mainListState = _mainListState.asStateFlow()
+
+
+    val queryFlow: StateFlow<QuerySubreddit> =
+        savedStateHandle.getStateFlow(QUERY_SUBREDDIT, DEFAULT_REDDIT_QUERY)
+
 
     private val repository = RedditRepository()
 
 
-    private val currentQuery =
-        savedStateHandle.getStateFlow(QUERY_SUBREDDIT, DEFAULT_REDDIT_QUERY)
-
-
-    //fun getPostsFlow(): Flow<PagingData<Article>> = repository.getSubreddit().cachedIn(viewModelScope)
-
-    val posts: Flow<List<RedditItem>> = currentQuery.map {
-        repository.simpleGetSubreddit(it.subreddit, it.category, it.limit)
-    }
-
-
     init {
         viewModelScope.launch {
-            _mainListState.value = generateDefaultList(100)
-            //repository.simpleGetSubreddit(DEFAULT_REDDIT_QUERY.subreddit,DEFAULT_REDDIT_QUERY.category,DEFAULT_REDDIT_QUERY.limit)
 
-            //posts.collect()
+            queryFlow.map {
+                repository.simpleGetSubreddit(it.subreddit, it.category, it.limit)
+            }.onEach {
+                savedStateHandle[MAIN_LIST_SUBREDDIT_KEY] = it
+            }.collect()
         }
+    }
+
+    fun searchPosts() {
+        savedStateHandle[QUERY_SUBREDDIT] = DEFAULT_REDDIT_QUERY
     }
 
 
     @SuppressLint("CheckResult")
-    fun toggleMainListLike(changingItem: ComplexElem) {
-        val newList = _mainListState.value.toMutableList().apply {
-            val one = first {
-                it.id == changingItem.id
-            }
-            val new: ComplexElem
-            val ind = indexOf(one)
-            if (one is ComplexElem) {
-                new = one.copy(
-                    liked = !changingItem.liked
-                )
-            } else {
-                error("Not ComplexElem found error. Not Click not from ComplexElem.")
-            }
-            set(ind, new)
-        }.toList()
-        _mainListState.value = newList
+    fun toggleMainListLike(changingItem: RedditItem) {
 
+        val changingList = mainListState.value.toMutableList()
 
-    }
+        val elem = changingList.first { it.id == changingItem.id }
+        val index = changingList.indexOf(elem)
+        val status = elem.getLikeStatus() != true
+        val new = elem.setLikeStatus(status)
 
-    private fun generateDefaultList(count: Int): List<Item> {
-        val newList = List(count) {
-            when ((1..2).random()) {
-                1 -> SimpleElem(it, "TestSimple", "TestSimple text")
-                2 -> ComplexElem(it, "TestComplex", "TestComplex text", "Me", false)
-                else -> error("Wrong random number")
-            }
-        }
-        return newList
+        //val newList = mainListState.value.set(index, new)
+
+        changingList[index] = new
+        println(changingList)
+
+        //_mainListState.value = changingList
+        savedStateHandle[MAIN_LIST_SUBREDDIT_KEY] = changingList.toList()
     }
 
 
     companion object {
-        val DEFAULT_MAIN_LIST_STATE = emptyList<Item>()
+        val DEFAULT_MAIN_LIST_STATE = mutableListOf<RedditItem>()
 
         val DEFAULT_POSTS_FLOW = emptyList<RedditItem>()
         private const val QUERY_SUBREDDIT = "QUERY_SUBREDDIT"
+        private const val MAIN_LIST_SUBREDDIT_KEY = "MAIN_LIST_SUBREDDIT"
         val DEFAULT_REDDIT_QUERY = QuerySubreddit("Popular", "top", "20")
+
     }
 }
 

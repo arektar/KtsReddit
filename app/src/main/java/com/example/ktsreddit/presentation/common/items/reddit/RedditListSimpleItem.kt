@@ -1,7 +1,6 @@
-package com.swallow.cracker.ui.model
+package com.example.ktsreddit.presentation.common.items.reddit
 
 import android.os.Parcelable
-import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
 import com.swallow.cracker.utils.convertLongToTime
 import kotlinx.parcelize.Parcelize
 

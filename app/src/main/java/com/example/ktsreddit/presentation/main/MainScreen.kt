@@ -14,20 +14,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.ktsreddit.R
 import com.example.ktsreddit.presentation.common.compose.mainlist.ImageMpItemView
 import com.example.ktsreddit.presentation.common.compose.mainlist.SimpleMpItemView
-import com.example.ktsreddit.presentation.common.compose_theme.KtsRedditTheme
-import com.example.ktsreddit.presentation.common.items.ComplexElem
-import com.example.ktsreddit.presentation.common.items.Item
 import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
-import com.example.ktsreddit.presentation.main.MainViewModel.Companion.DEFAULT_POSTS_FLOW
-import com.swallow.cracker.ui.model.RedditListItemImage
-import com.swallow.cracker.ui.model.RedditListSimpleItem
+import com.example.ktsreddit.presentation.common.items.reddit.RedditListItemImage
+import com.example.ktsreddit.presentation.common.items.reddit.RedditListSimpleItem
 
 
 class MainPageFragment : BaseComposeFragment() {
@@ -39,8 +34,7 @@ class MainPageFragment : BaseComposeFragment() {
     @Composable
     override fun ComposeScreen() {
         val mainListState by viewModel.mainListState.collectAsState()
-        val posts by viewModel.posts.collectAsState(DEFAULT_POSTS_FLOW)
-        MainPage(posts, {})
+        MainPage(mainListState, viewModel::toggleMainListLike)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

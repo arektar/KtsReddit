@@ -1,9 +1,6 @@
 package com.example.ktsreddit.presentation.common.items.reddit
 
-import com.swallow.cracker.ui.model.RedditListItemImage
-import com.swallow.cracker.ui.model.RedditListSimpleItem
-
-abstract class RedditItem {
+abstract class RedditItem() {
     abstract val id: String
 
     fun id(): String {
@@ -26,10 +23,12 @@ abstract class RedditItem {
         }
     }
 
-    fun setLikeStatus(likes: Boolean?) {
+    fun setLikeStatus(likes: Boolean?):RedditItem {
         return when (this) {
-            is RedditListSimpleItem -> this.likes = likes
-            is RedditListItemImage -> this.likes = likes
+            is RedditListSimpleItem ->
+            this.copy(likes=likes)
+            is RedditListItemImage ->
+                this.copy(likes=likes)
             else -> {
                 error("Bad RedditItem subclass")
             }

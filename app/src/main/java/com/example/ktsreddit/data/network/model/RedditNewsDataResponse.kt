@@ -2,7 +2,6 @@ package com.example.ktsreddit.data.network.model
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.swallow.cracker.data.model.RedditChildrenPreview
 
 @JsonClass(generateAdapter = true)
 data class RedditNewsDataResponse(
