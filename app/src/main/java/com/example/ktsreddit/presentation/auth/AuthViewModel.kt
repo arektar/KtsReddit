@@ -1,54 +1,47 @@
 package com.example.ktsreddit.presentation.auth
 
 import android.app.Application
-import android.content.Intent
-import android.util.Patterns
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.ktsreddit.BuildConfig
 import com.example.ktsreddit.R
+import com.example.ktsreddit.data.auth.models.*
 import com.kts.github.data.auth.AuthRepository
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.trySendBlocking
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationService
 import net.openid.appauth.TokenRequest
 import timber.log.Timber
 
-class AuthViewModel(application: Application) : AndroidViewModel(application) {
+class AuthViewModel(application: Application, private val savedStateHandle: SavedStateHandle) :
+    AndroidViewModel(application) {
 
     private val _authState = MutableStateFlow(DEFAULT_AUTH_STATE)
-    val authState: StateFlow<AuthState> = _authState.asStateFlow()
+    val authState: StateFlow<UIAuthState> = _authState.asStateFlow()
+
 
     private val authRepository = AuthRepository()
     private val authService: AuthorizationService = AuthorizationService(getApplication())
 
-    private val openAuthPageEventChannel = Channel<Intent>(Channel.BUFFERED)
-    private val toastEventChannel = Channel<Int>(Channel.BUFFERED)
-    private val authSuccessEventChannel = Channel<Unit>(Channel.BUFFERED)
-
-    private val loadingMutableStateFlow = MutableStateFlow(false)
-
-    val openAuthPageFlow: Flow<Intent>
-        get() = openAuthPageEventChannel.receiveAsFlow()
-
-    val loadingFlow: Flow<Boolean>
-        get() = loadingMutableStateFlow.asStateFlow()
-
-    val toastFlow: Flow<Int>
-        get() = toastEventChannel.receiveAsFlow()
-
-    val authSuccessFlow: Flow<Unit>
-        get() = authSuccessEventChannel.receiveAsFlow()
+    val openAuthEventsFlow: Flow<AuthEvent> = savedStateHandle.getStateFlow(
+        AUTH_EVENTS_SAVE_KEY,
+        DEFAULT_AUTH_EVENTS
+    )
 
 
+    private fun sendAuthEvent(event: AuthEvent) {
+        savedStateHandle[AUTH_EVENTS_SAVE_KEY] = event
+    }
 
 
     fun onAuthCodeFailed(exception: AuthorizationException) {
-        toastEventChannel.trySendBlocking(R.string.auth_failed)
+        sendAuthEvent(AuthToast(R.string.auth_failed))
     }
 
     fun onAuthCodeReceived(tokenRequest: TokenRequest) {
@@ -56,19 +49,24 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         Timber.tag("Oauth").d("3. Received code = ${tokenRequest.authorizationCode}")
 
         viewModelScope.launch {
-            loadingMutableStateFlow.value = true
+            _authState.value.loadingMutableStateFlow.value = true
+            //setAuthState(newState)
             runCatching {
-                Timber.tag("Oauth").d("4. Change code to token. Url = ${tokenRequest.configuration.tokenEndpoint}, verifier = ${tokenRequest.codeVerifier}")
+                Timber.tag("Oauth")
+                    .d("4. Change code to token. Url = ${tokenRequest.configuration.tokenEndpoint}, verifier = ${tokenRequest.codeVerifier}")
                 authRepository.performTokenRequest(
                     authService = authService,
                     tokenRequest = tokenRequest
                 )
             }.onSuccess {
-                loadingMutableStateFlow.value = false
-                authSuccessEventChannel.send(Unit)
+                _authState.value.loadingMutableStateFlow.value = false
+                sendAuthEvent(AuthSuccess)
+
             }.onFailure {
-                loadingMutableStateFlow.value = false
-                toastEventChannel.send(R.string.auth_failed)
+                _authState.value.loadingMutableStateFlow.value = false
+                sendAuthEvent(AuthToast(R.string.auth_failed))
+
+
             }
         }
     }
@@ -78,14 +76,16 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
         val authRequest = authRepository.getAuthRequest()
 
-        Timber.tag("Oauth").d("1. Generated verifier=${authRequest.codeVerifier},challenge=${authRequest.codeVerifierChallenge}")
+        Timber.tag("Oauth")
+            .d("1. Generated verifier=${authRequest.codeVerifier},challenge=${authRequest.codeVerifierChallenge}")
 
         val openAuthPageIntent = authService.getAuthorizationRequestIntent(
             authRequest,
             customTabsIntent
         )
 
-        openAuthPageEventChannel.trySendBlocking(openAuthPageIntent)
+        //openAuthPageEventChannel.trySendBlocking(openAuthPageIntent)
+        sendAuthEvent(AuthIntent(openAuthPageIntent))
         Timber.tag("Oauth").d("2. Open auth page: ${authRequest.toUri()}")
     }
 
@@ -96,16 +96,21 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
 
     companion object {
-        val DEFAULT_AUTH_STATE = AuthState()
+        val DEFAULT_AUTH_STATE = UIAuthState()
+        private const val AUTH_EVENTS_SAVE_KEY = "AUTH_EVENTS_SAVE_KEY"
+        val DEFAULT_AUTH_EVENTS = AuthDefault
     }
 
 }
 
-data class AuthState(
+data class UIAuthState(
     val login: String = "",
     val password: String = "",
     val loginIsCorrect: Boolean = false,
     val passwordIsCorrect: Boolean = false,
+
+    val loadingMutableStateFlow: MutableStateFlow<Boolean> = MutableStateFlow(false),
+    val loadingFlow: Flow<Boolean> = loadingMutableStateFlow.asStateFlow()
 ) {
     // TODO: Fix at prod
     val loginEnabled = if (BuildConfig.DEBUG) {

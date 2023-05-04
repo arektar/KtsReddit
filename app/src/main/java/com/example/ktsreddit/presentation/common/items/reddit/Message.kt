@@ -1,4 +1,4 @@
-package com.swallow.cracker.ui.model
+package com.example.ktsreddit.presentation.common.items.reddit
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

@@ -2,59 +2,43 @@ package com.example.ktsreddit.data
 
 import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
 import com.example.ktsreddit.data.network.Networking
-import com.swallow.cracker.data.model.RedditMapper
+import com.example.ktsreddit.data.network.model.RedditMapper
 import retrofit2.Response
 
 class RedditRepository {
 
-    var modHash = ""
-
     suspend fun simpleGetSubreddit(
         subreddit: String,
         category: String,
-        limit: String
+        limit: Int
     ): List<RedditItem> {
         val response = Networking.redditApiOAuth.getSubreddit(
             subreddit = subreddit,
             category = category,
             limit = limit,
-            count = REQUEST_COUNT.toString(),
+            count = REQUEST_COUNT,
             after = null,
             before = null
         )
 
-        //val responseBody = checkNotNull(response.body())
-        //val after = responseBody.data.after
-        //val before = params.key?.let { responseBody.data.before }
-
         return checkNotNull(response.body()).data.children.map { RedditMapper.mapApiToUi(it.data) }
     }
 
-    suspend fun getModHash(){
-        val response = getUserInfo()
-        val data = response.body()
-        println(data)
-        modHash = checkNotNull(response.body()).toString()
-        println(modHash)
+
+    suspend fun savePost(category: String?, id: String) {
+        Networking.redditApiOAuth.savedPost(category = category, id = id)
     }
 
-
-
-
-    suspend fun savePost(category: String?, id: String): Response<Unit> {
-        return Networking.redditApiOAuth.savedPost(category = category, id = id)
-    }
-
-    suspend fun unSavePost(id: String): Response<Unit> {
-        return Networking.redditApiOAuth.unSavedPost(id = id)
+    suspend fun unSavePost(id: String) {
+        Networking.redditApiOAuth.unSavedPost(id = id)
     }
 
     suspend fun getUserInfo(): Response<Unit> {
         return Networking.redditApiOAuth.getMe()
     }
 
-    suspend fun votePost(dir: Int, id: String): Response<Unit> {
-        return Networking.redditApiOAuth.votePost(dir = dir.toString(), id = id)
+    suspend fun votePost(dir: Int, id: String) {
+        Networking.redditApiOAuth.votePost(dir = dir.toString(), id = id)
     }
 
     companion object {

@@ -1,7 +1,7 @@
 package com.example.ktsreddit.data.network
 
-import com.swallow.cracker.data.model.RedditDataResponse
-import com.swallow.cracker.data.model.RedditJsonWrapper
+import com.example.ktsreddit.data.network.model.RedditDataResponse
+import com.example.ktsreddit.data.network.model.RedditJsonWrapper
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -11,8 +11,8 @@ interface RedditApi {
     suspend fun getSubreddit(
         @Path("subreddit") subreddit: String,
         @Path("category") category: String,
-        @Query("limit") limit: String,
-        @Query("count") count: String,
+        @Query("limit") limit: Int,
+        @Query("count") count: Int,
         @Query("after") after: String? = null,
         @Query("before") before: String? = null
     ): Response<RedditJsonWrapper<RedditDataResponse>>

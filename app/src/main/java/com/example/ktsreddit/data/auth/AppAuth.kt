@@ -68,8 +68,6 @@ object AppAuth {
         }
     }
 
-    //suspend fun performModHashRequestSuspend
-
     private fun getClientAuthentication(): ClientAuthentication {
         return ClientSecretBasic(CLIENT_SECRET)
     }

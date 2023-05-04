@@ -90,7 +90,6 @@ class AuthorizationFailedInterceptor(
             tokenUpdateTime = System.currentTimeMillis()
         } else {
             // не удалось обновить токен, произвести логаут
-//            unauthorizedHandler.onUnauthorized()
             Timber.d("logout after token refresh failure")
         }
         getLatch()?.countDown()

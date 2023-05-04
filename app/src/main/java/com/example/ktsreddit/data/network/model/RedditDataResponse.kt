@@ -1,6 +1,5 @@
-package com.swallow.cracker.data.model
+package com.example.ktsreddit.data.network.model
 
-import com.example.ktsreddit.data.network.model.RedditChildrenResponse
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 

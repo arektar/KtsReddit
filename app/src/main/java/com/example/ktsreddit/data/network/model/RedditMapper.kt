@@ -1,6 +1,6 @@
-package com.swallow.cracker.data.model
+package com.example.ktsreddit.data.network.model
 
-import com.example.ktsreddit.data.network.model.RedditNewsDataResponse
+import com.example.ktsreddit.presentation.common.items.reddit.LikeState.Companion.getLikedByBool
 import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
 import com.example.ktsreddit.presentation.common.items.reddit.RedditListItemImage
 import com.example.ktsreddit.presentation.common.items.reddit.RedditListSimpleItem
@@ -16,9 +16,9 @@ object RedditMapper {
                 title = item.title,
                 selftext = item.selftext,
                 score = item.score,
-                likes = item.likes,
+                likes = getLikedByBool(item.likes),
                 saved = item.saved,
-                numComments = item.num_comments,
+                numComments = item.numComments,
                 created = item.created,
                 thumbnail = item.thumbnail,
                 url = item.url,
@@ -32,9 +32,9 @@ object RedditMapper {
                 title = item.title,
                 selftext = item.selftext,
                 score = item.score,
-                likes = item.likes,
+                likes = getLikedByBool(item.likes),
                 saved = item.saved,
-                numComments = item.num_comments,
+                numComments = item.numComments,
                 created = item.created,
                 url = item.url
             )

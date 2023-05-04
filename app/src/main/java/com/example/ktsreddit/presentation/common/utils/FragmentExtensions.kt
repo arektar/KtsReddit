@@ -3,7 +3,7 @@ package com.example.ktsreddit.presentation.common.utils
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
-import com.swallow.cracker.ui.model.Message
+import com.example.ktsreddit.presentation.common.items.reddit.Message
 
 fun Fragment.toast(@StringRes stringRes: Int) {
     Toast.makeText(requireContext(), stringRes, Toast.LENGTH_SHORT).show()

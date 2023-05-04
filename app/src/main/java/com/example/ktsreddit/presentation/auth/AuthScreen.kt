@@ -18,9 +18,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.viewModels
-import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.ktsreddit.R
+import com.example.ktsreddit.data.auth.models.AuthDefault
+import com.example.ktsreddit.data.auth.models.AuthIntent
+import com.example.ktsreddit.data.auth.models.AuthSuccess
+import com.example.ktsreddit.data.auth.models.AuthToast
 import com.example.ktsreddit.presentation.common.compose.base.BaseComposeFragment
 import com.example.ktsreddit.presentation.common.compose_theme.KtsRedditTheme
 import com.example.ktsreddit.presentation.common.utils.launchAndCollectIn
@@ -30,13 +33,13 @@ import net.openid.appauth.AuthorizationResponse
 
 class AuthorisationFragment : BaseComposeFragment() {
 
-    private lateinit var navController: NavController
     private val viewModel: AuthViewModel by viewModels()
 
-    private val getAuthResponse = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        val dataIntent = it.data ?: return@registerForActivityResult
-        handleAuthResponseIntent(dataIntent)
-    }
+    private val getAuthResponse =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            val dataIntent = it.data ?: return@registerForActivityResult
+            handleAuthResponseIntent(dataIntent)
+        }
 
     @Composable
     override fun ComposeScreen() {
@@ -50,20 +53,30 @@ class AuthorisationFragment : BaseComposeFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViewModel()
-        navController = findNavController()
     }
 
     private fun navigateNext() {
-        navController.navigate(
+        findNavController().navigate(
             AuthorisationFragmentDirections.actionAuthorisationFragmentToMainPageFragment()
         )
     }
 
     private fun bindViewModel() {
-        //binding.loginButton.setOnClickListener { viewModel.openLoginPage() }
-        viewModel.loadingFlow.launchAndCollectIn(viewLifecycleOwner) {
-            //updateIsLoading(it)
+        viewModel.openAuthEventsFlow.launchAndCollectIn(viewLifecycleOwner) {
+            when (it) {
+                is AuthToast -> {
+                    toast(it.toast)
+                }
+                is AuthIntent -> {
+                    openAuthPage(it.intent)
+                }
+                is AuthSuccess -> navigateNext()
+                is AuthDefault -> {}
+            }
         }
+
+
+        /*
         viewModel.openAuthPageFlow.launchAndCollectIn(viewLifecycleOwner) {
             openAuthPage(it)
         }
@@ -74,6 +87,8 @@ class AuthorisationFragment : BaseComposeFragment() {
             //findNavController().navigate(AuthFragmentDirections.actionAuthFragmentToRepositoryListFragment())
             navigateNext()
         }
+        /
+         */
     }
 
     /*private fun updateIsLoading(isLoading: Boolean) = with(binding) {
@@ -108,7 +123,7 @@ class AuthorisationFragment : BaseComposeFragment() {
 @Composable
 fun AuthView(
     navigateNext: () -> Unit,
-    authState: AuthState,
+    authState: UIAuthState,
 ) {
 
     Column(
@@ -134,8 +149,9 @@ fun LoginButton(navigateNext: () -> Unit, isActive: Boolean) {
 @Composable
 fun AuthPreview() {
     KtsRedditTheme {
-        val authState = AuthState()
-        AuthView({},
+        val authState = UIAuthState()
+        AuthView(
+            {},
             authState = authState,
         )
     }

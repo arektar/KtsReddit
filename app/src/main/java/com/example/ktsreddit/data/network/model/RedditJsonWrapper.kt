@@ -1,4 +1,4 @@
-package com.swallow.cracker.data.model
+package com.example.ktsreddit.data.network.model
 
 import com.squareup.moshi.JsonClass
 

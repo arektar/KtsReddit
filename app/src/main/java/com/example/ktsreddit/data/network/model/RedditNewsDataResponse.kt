@@ -24,7 +24,7 @@ data class RedditNewsDataResponse(
     @Json(name = "saved")
     val saved: Boolean,
     @Json(name = "num_comments")
-    val num_comments: Int,
+    val numComments: Int,
     @Json(name = "created")
     val created: Long,
     @Json(name = "thumbnail")

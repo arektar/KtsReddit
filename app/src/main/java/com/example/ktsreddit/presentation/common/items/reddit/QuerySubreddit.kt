@@ -4,5 +4,5 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class QuerySubreddit(var subreddit: String, var category: String, var limit: String) :
+data class QuerySubreddit(val subreddit: String, val category: String, val limit: Int) :
     Parcelable

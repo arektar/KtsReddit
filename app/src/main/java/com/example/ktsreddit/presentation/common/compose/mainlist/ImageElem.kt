@@ -10,17 +10,19 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.ktsreddit.presentation.common.compose.mainlist.components.DislikeButton
-import com.example.ktsreddit.presentation.common.compose.mainlist.components.LikeButton
 import com.example.ktsreddit.presentation.common.compose.mainlist.components.MainListCard
+import com.example.ktsreddit.presentation.common.compose.mainlist.components.VoteButton
 import com.example.ktsreddit.presentation.common.compose_theme.KtsRedditTheme
 import com.example.ktsreddit.presentation.common.compose_theme.myColors
+import com.example.ktsreddit.presentation.common.items.reddit.LikeState
 import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
 import com.example.ktsreddit.presentation.common.items.reddit.RedditListItemImage
 
@@ -32,39 +34,49 @@ fun ImageMpItemView(
     onDislikeClick: (RedditItem) -> Unit
 ) {
 
-    val defaultTextsMod = Modifier.padding(horizontal = 10.dp, vertical = 1.dp)
-    val titleTextsMod = Modifier.padding(horizontal = 10.dp, vertical = 3.dp)
-    val authorTextsMod = Modifier
-        .padding(horizontal = 10.dp, vertical = 5.dp)
-        .fillMaxWidth()
-    val likesTextsMod = Modifier
-        .padding(horizontal = 3.dp, vertical = 5.dp)
-    val columnMod = Modifier.padding(5.dp)
-
-    MainListCard() {
-        Column(modifier = columnMod) {
+    MainListCard {
+        Column(modifier = Modifier.padding(5.dp)) {
 
             Text(
                 text = elem.author,
-                modifier = authorTextsMod,
+                modifier = Modifier
+                    .padding(horizontal = 10.dp, vertical = 5.dp)
+                    .fillMaxWidth(),
                 textAlign = TextAlign.End,
                 fontStyle = FontStyle.Italic
             )
 
             Divider(color = MaterialTheme.myColors.cardMpBorder, thickness = 1.dp)
-            Text(text = elem.title, modifier = titleTextsMod, fontWeight = FontWeight.Bold)
-            Text(text = elem.selftext, modifier = defaultTextsMod)
+            Text(
+                text = elem.title,
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.dp),
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = elem.selftext,
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 1.dp)
+            )
             Divider(color = MaterialTheme.myColors.cardMpBorder, thickness = 1.dp)
 
-            Row() {
-                LikeButton(elem = elem, onClick = onLikeClick)
+            Row {
+                VoteButton(
+                    isActive = elem.likes.isLike == true,
+                    onClick = { onLikeClick(elem) },
+                )
                 Text(
                     text = elem.score.toString(),
-                    modifier = likesTextsMod.align(Alignment.CenterVertically),
+                    modifier = Modifier
+                        .padding(horizontal = 3.dp, vertical = 5.dp)
+                        .align(Alignment.CenterVertically),
                     textAlign = TextAlign.Center,
                     fontSize = 15.sp
                 )
-                DislikeButton(elem = elem, onClick = onDislikeClick)
+                VoteButton(
+                    isActive = elem.likes.isLike == false,
+                    onClick = { onDislikeClick(elem) },
+                    modifier = Modifier.rotate(180f),
+                    colorOn = Color.Red
+                )
             }
 
 
@@ -85,7 +97,7 @@ fun SimpleMpItemPreview() {
         "Test",
         "Test",
         0,
-        null,
+        LikeState.NotSet,
         false,
         0,
         7,
@@ -94,10 +106,7 @@ fun SimpleMpItemPreview() {
         null,
     )
     KtsRedditTheme {
-        ImageMpItemView(
-            elem = defaultElem,
-            {}, {}
-        )
+        ImageMpItemView(elem = defaultElem, {}, {})
     }
 }
 

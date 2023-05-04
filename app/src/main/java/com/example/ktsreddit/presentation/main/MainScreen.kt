@@ -1,10 +1,12 @@
 package com.example.ktsreddit.presentation.main
 
-import com.example.ktsreddit.presentation.common.compose.base.BaseComposeFragment
 import android.os.Bundle
 import android.view.View
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -16,9 +18,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.viewModels
-import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
 import com.example.ktsreddit.R
+import com.example.ktsreddit.presentation.common.compose.base.BaseComposeFragment
 import com.example.ktsreddit.presentation.common.compose.mainlist.ImageMpItemView
 import com.example.ktsreddit.presentation.common.compose.mainlist.SimpleMpItemView
 import com.example.ktsreddit.presentation.common.compose_theme.KtsRedditTheme
@@ -29,8 +30,6 @@ import com.example.ktsreddit.presentation.common.items.reddit.RedditListSimpleIt
 
 class MainPageFragment : BaseComposeFragment() {
 
-
-    private lateinit var navController: NavController
     private val viewModel: MainViewModel by viewModels()
 
     @Composable
@@ -41,7 +40,6 @@ class MainPageFragment : BaseComposeFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        navController = findNavController()
     }
 }
 
