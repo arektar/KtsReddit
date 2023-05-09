@@ -1,7 +1,7 @@
 package com.example.ktsreddit.data.network
 
-import com.example.ktsreddit.data.network.model.RedditDataResponse
-import com.example.ktsreddit.data.network.model.RedditJsonWrapper
+import com.example.ktsreddit.data.network.model.Reddit.RedditDataResponse
+import com.example.ktsreddit.data.network.model.Reddit.RedditJsonWrapper
 import retrofit2.Response
 import retrofit2.http.*
 

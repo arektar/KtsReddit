@@ -1,14 +1,15 @@
 package com.example.ktsreddit.presentation.main
 
+import com.example.ktsreddit.data.network.NetworkStatusTracker
 import android.annotation.SuppressLint
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ktsreddit.data.RedditRepository
+import com.example.ktsreddit.data.network.map
 import com.example.ktsreddit.presentation.common.items.reddit.LikeState
-
-import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
 import com.example.ktsreddit.presentation.common.items.reddit.QuerySubreddit
+import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -25,6 +26,12 @@ class MainViewModel(
 
 
     private val repository = RedditRepository()
+
+    private val networkStatusTracker: NetworkStatusTracker = NetworkStatusTracker
+    val netState = networkStatusTracker.networkStatus.map(
+                onUnavailable = { false },
+                onAvailable = { true },
+            )
 
 
     init {
@@ -87,5 +94,3 @@ class MainViewModel(
 
     }
 }
-
-

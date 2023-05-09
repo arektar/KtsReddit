@@ -1,7 +1,7 @@
 package com.example.ktsreddit.presentation.common.items.reddit
 
 import android.os.Parcelable
-import com.example.ktsreddit.data.network.model.RedditChildrenPreview
+import com.example.ktsreddit.data.network.model.Reddit.RedditChildrenPreview
 import com.example.ktsreddit.presentation.common.utils.convertLongToTime
 import kotlinx.parcelize.Parcelize
 
