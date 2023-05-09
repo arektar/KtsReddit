@@ -7,5 +7,7 @@
     <string name="login">Login</string>
     <string name="mail_input">mail</string>
     <string name="password_input">password</string>
+    <string name="auth_failed">Authentication failed</string>
+    <string name="reddit_login">Continue with Reddit</string>
 
 </resources>
