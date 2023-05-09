@@ -49,7 +49,7 @@ class AuthViewModel(application: Application, private val savedStateHandle: Save
         Timber.tag("Oauth").d("3. Received code = ${tokenRequest.authorizationCode}")
 
         viewModelScope.launch {
-            _authState.value.loadingMutableStateFlow.value = true
+            _authState.value = _authState.value.copy(loading = true)
             //setAuthState(newState)
             runCatching {
                 Timber.tag("Oauth")
@@ -59,11 +59,11 @@ class AuthViewModel(application: Application, private val savedStateHandle: Save
                     tokenRequest = tokenRequest
                 )
             }.onSuccess {
-                _authState.value.loadingMutableStateFlow.value = false
+                _authState.value = _authState.value.copy(loading = false)
                 sendAuthEvent(AuthSuccess)
 
             }.onFailure {
-                _authState.value.loadingMutableStateFlow.value = false
+                _authState.value = _authState.value.copy(loading = false)
                 sendAuthEvent(AuthToast(R.string.auth_failed))
 
 
@@ -109,8 +109,7 @@ data class UIAuthState(
     val loginIsCorrect: Boolean = false,
     val passwordIsCorrect: Boolean = false,
 
-    val loadingMutableStateFlow: MutableStateFlow<Boolean> = MutableStateFlow(false),
-    val loadingFlow: Flow<Boolean> = loadingMutableStateFlow.asStateFlow()
+    val loading: Boolean = false
 ) {
     // TODO: Fix at prod
     val loginEnabled = if (BuildConfig.DEBUG) {
