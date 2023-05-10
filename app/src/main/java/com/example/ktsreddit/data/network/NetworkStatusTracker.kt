@@ -14,18 +14,18 @@ import kotlinx.coroutines.flow.map
 object NetworkStatusTracker{
     private var connectivityManager : ConnectivityManager? = null
 
-    val networkStatus = callbackFlow<NetworkStatus> {
+    val networkStatus = callbackFlow<Boolean> {
         val networkStatusCallback = object : ConnectivityManager.NetworkCallback() {
             override fun onUnavailable() {
-                trySend(NetworkStatus.Unavailable).isSuccess
+                trySend(false).isSuccess
             }
 
             override fun onAvailable(network: Network) {
-                trySend(NetworkStatus.Available).isSuccess
+                trySend(true).isSuccess
             }
 
             override fun onLost(network: Network) {
-                trySend(NetworkStatus.Unavailable).isSuccess
+                trySend(false).isSuccess
             }
         }
 
@@ -42,8 +42,9 @@ object NetworkStatusTracker{
     fun init(context: Context) {
         connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
-}
 
+}
+/*
 inline fun <Result> Flow<NetworkStatus>.map(
     crossinline onUnavailable: suspend () -> Result,
     crossinline onAvailable: suspend () -> Result,
@@ -53,3 +54,5 @@ inline fun <Result> Flow<NetworkStatus>.map(
         NetworkStatus.Available -> onAvailable()
     }
 }
+
+ */

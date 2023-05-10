@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.ktsreddit.R
 import com.example.ktsreddit.presentation.common.compose.base.BaseComposeFragment
 import com.example.ktsreddit.presentation.common.compose.mainlist.ImageMpItemView
@@ -37,8 +38,8 @@ class MainPageFragment : BaseComposeFragment() {
 
     @Composable
     override fun ComposeScreen() {
-        val mainListState by viewModel.mainListState.collectAsState()
-        val netStatus by viewModel.netState.collectAsState(initial = false)
+        val mainListState by viewModel.mainListState.collectAsStateWithLifecycle()
+        val netStatus by viewModel.netStateFlow.collectAsStateWithLifecycle()
         MainPage(
             mainListState,
             viewModel::toggleMainListLike,

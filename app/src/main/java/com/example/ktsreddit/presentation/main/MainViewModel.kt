@@ -6,7 +6,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ktsreddit.data.RedditRepository
-import com.example.ktsreddit.data.network.map
 import com.example.ktsreddit.presentation.common.items.reddit.LikeState
 import com.example.ktsreddit.presentation.common.items.reddit.QuerySubreddit
 import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
@@ -28,13 +27,19 @@ class MainViewModel(
     private val repository = RedditRepository()
 
     private val networkStatusTracker: NetworkStatusTracker = NetworkStatusTracker
-    val netState = networkStatusTracker.networkStatus.map(
-                onUnavailable = { false },
-                onAvailable = { true },
-            )
+
+
+    val netStateFlow = MutableStateFlow<Boolean>(false)
+    private val netAvailableFlow = networkStatusTracker.networkStatus
 
 
     init {
+        initPostsProcess()
+        initNetStateProcess()
+
+    }
+
+    private fun initPostsProcess(){
         viewModelScope.launch {
 
             queryFlow.map {
@@ -43,6 +48,14 @@ class MainViewModel(
                 savedStateHandle[MAIN_LIST_SUBREDDIT_KEY] = it
             }.collect()
 
+        }
+    }
+
+    fun initNetStateProcess(){
+        viewModelScope.launch {
+            netAvailableFlow.collect { value ->
+                netStateFlow.value = value
+            }
         }
     }
 
