@@ -51,7 +51,7 @@ class MainViewModel(
         }
     }
 
-    fun initNetStateProcess(){
+    private fun initNetStateProcess(){
         viewModelScope.launch {
             netAvailableFlow.collect { value ->
                 netStateFlow.value = value
