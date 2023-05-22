@@ -39,7 +39,7 @@ class MainPageFragment : BaseComposeFragment() {
     @Composable
     override fun ComposeScreen() {
         val mainListState by viewModel.mainListState.collectAsStateWithLifecycle()
-        val netStatus by viewModel.netStateFlow.collectAsStateWithLifecycle()
+        val netStatus by viewModel.netStateFlow.collectAsStateWithLifecycle(false)
         MainPage(
             mainListState,
             viewModel::toggleMainListLike,
