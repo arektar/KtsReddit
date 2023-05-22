@@ -2,7 +2,7 @@ package com.example.ktsreddit.data
 
 import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
 import com.example.ktsreddit.data.network.Networking
-import com.example.ktsreddit.data.network.model.RedditMapper
+import com.example.ktsreddit.data.network.model.Reddit.RedditMapper
 import retrofit2.Response
 
 class RedditRepository {

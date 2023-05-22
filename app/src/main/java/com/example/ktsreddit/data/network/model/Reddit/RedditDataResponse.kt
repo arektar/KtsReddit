@@ -1,4 +1,4 @@
-package com.example.ktsreddit.data.network.model
+package com.example.ktsreddit.data.network.model.Reddit
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

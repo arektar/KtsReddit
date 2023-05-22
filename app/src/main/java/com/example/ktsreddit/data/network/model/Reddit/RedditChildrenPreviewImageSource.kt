@@ -1,9 +1,8 @@
-package com.example.ktsreddit.data.network.model
+package com.example.ktsreddit.data.network.model.Reddit
 
 import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

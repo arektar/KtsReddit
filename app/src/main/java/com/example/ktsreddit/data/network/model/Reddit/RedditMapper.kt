@@ -1,4 +1,4 @@
-package com.example.ktsreddit.data.network.model
+package com.example.ktsreddit.data.network.model.Reddit
 
 import com.example.ktsreddit.presentation.common.items.reddit.LikeState.Companion.getLikedByBool
 import com.example.ktsreddit.presentation.common.items.reddit.RedditItem

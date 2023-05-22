@@ -8,11 +8,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.ktsreddit.presentation.common.compose_theme.KtsRedditTheme
+import com.example.ktsreddit.presentation.common.utils.LocalViewLifecycleOwner
 
 abstract class BaseComposeFragment : Fragment() {
 
@@ -36,7 +39,11 @@ abstract class BaseComposeFragment : Fragment() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background,
                 ) {
-                    ComposeScreen()
+                    CompositionLocalProvider(LocalViewLifecycleOwner provides viewLifecycleOwner ) {
+                        _localNavController = rememberNavController()
+                        ComposeScreen()
+                    }
+
                 }
             }
         }
