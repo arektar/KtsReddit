@@ -41,6 +41,8 @@ fun AuthScreen(
     val authState by viewModel.authState.collectAsState()
     val openAuthEventsFlow =  viewModel.openAuthEventsFlow
 
+    val context = LocalContext.current
+
     val getAuthResponse =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             val dataIntent = it.data ?: return@rememberLauncherForActivityResult
@@ -69,7 +71,7 @@ fun AuthScreen(
         openAuthEventsFlow.collect() {
             when (it) {
                 is AuthToast -> {
-                    toast(it.toast,LocalContext.current)
+                    toast(it.toast,context)
                 }
                 is AuthIntent -> {
                     openAuthPage(it.intent)
