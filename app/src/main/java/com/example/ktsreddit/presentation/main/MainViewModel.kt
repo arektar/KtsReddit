@@ -35,7 +35,6 @@ class MainViewModel(
 
     init {
         initPostsProcess()
-        initNetStateProcess()
 
     }
 
@@ -51,13 +50,6 @@ class MainViewModel(
         }
     }
 
-    private fun initNetStateProcess(){
-        viewModelScope.launch {
-            netAvailableFlow.collect { value ->
-                netStateFlow.value = value
-            }
-        }
-    }
 
     fun searchPosts() {
         savedStateHandle[QUERY_SUBREDDIT] = DEFAULT_REDDIT_QUERY
