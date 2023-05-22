@@ -42,31 +42,6 @@ fun OnBoardingScreen(
 }
 
 
-
-/*class OnBoardingFragment : BaseComposeFragment() {
-
-
-    private lateinit var navController: NavController
-
-    @Composable
-    override fun ComposeScreen() {
-        //OnBoarding(::navigateNext)
-        OnBoardingPager(navigateNext = ::navigateNext)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        navController = findNavController()
-    }
-
-    private fun navigateNext() {
-        navController.navigate(
-            OnBoardingFragmentDirections.actionOnBoardingFragmentToAuthorisationFragment()
-        )
-    }
-}*/
-
-
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun OnBoardingPager(pageCount: Int = 3, navigateNext: () -> Unit) {

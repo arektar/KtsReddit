@@ -55,28 +55,6 @@ fun ComposeMainScreen(viewModel: MainViewModel) {
     )
 }
 
-/*
-class MainPageFragment : BaseComposeFragment() {
-
-    private val viewModel: MainViewModel by viewModels()
-
-    @Composable
-    override fun ComposeScreen() {
-        val mainListState by viewModel.mainListState.collectAsStateWithLifecycle()
-        val netStatus by viewModel.netStateFlow.collectAsStateWithLifecycle(false)
-        MainPage(
-            mainListState,
-            viewModel::toggleMainListLike,
-            viewModel::toggleMainListDislike,
-            netStatus
-        )
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-}
-*/
 
 
 @Composable
