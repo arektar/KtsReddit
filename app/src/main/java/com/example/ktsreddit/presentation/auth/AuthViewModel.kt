@@ -8,11 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.ktsreddit.BuildConfig
 import com.example.ktsreddit.R
 import com.example.ktsreddit.data.auth.models.*
+import com.example.ktsreddit.presentation.common.navigation.NavigateEvent
+import com.example.ktsreddit.presentation.common.utils.OneTimeEvent
 import com.kts.github.data.auth.AuthRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationService
@@ -24,6 +23,10 @@ class AuthViewModel(application: Application, private val savedStateHandle: Save
 
     private val _authState = MutableStateFlow(DEFAULT_AUTH_STATE)
     val authState: StateFlow<UIAuthState> = _authState.asStateFlow()
+
+    private val mutableNavEvent = OneTimeEvent<NavigateEvent>()
+    val navEvents: Flow<NavigateEvent>
+        get() = mutableNavEvent.receiveAsFlow()
 
 
     private val authRepository = AuthRepository()
@@ -92,6 +95,10 @@ class AuthViewModel(application: Application, private val savedStateHandle: Save
     override fun onCleared() {
         super.onCleared()
         authService.dispose()
+    }
+
+    fun navigateNext() {
+        mutableNavEvent.trySend(NavigateEvent.NavigateToMain)
     }
 
 

@@ -9,6 +9,8 @@ import com.example.ktsreddit.data.RedditRepository
 import com.example.ktsreddit.presentation.common.items.reddit.LikeState
 import com.example.ktsreddit.presentation.common.items.reddit.QuerySubreddit
 import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
+import com.example.ktsreddit.presentation.common.navigation.NavigateEvent
+import com.example.ktsreddit.presentation.common.utils.OneTimeEvent
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -18,6 +20,10 @@ class MainViewModel(
 
     val mainListState: StateFlow<List<RedditItem>> =
         savedStateHandle.getStateFlow(MAIN_LIST_SUBREDDIT_KEY, DEFAULT_MAIN_LIST_STATE)
+
+    private val mutableNavEvent = OneTimeEvent<NavigateEvent>()
+    val navEvents: Flow<NavigateEvent>
+        get() = mutableNavEvent.receiveAsFlow()
 
 
     private val queryFlow: StateFlow<QuerySubreddit> =
