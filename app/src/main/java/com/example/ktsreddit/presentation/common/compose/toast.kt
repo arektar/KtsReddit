@@ -6,7 +6,7 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import timber.log.Timber
 
-@Composable
+
 fun toast(@StringRes stringRes:Int,context:Context) {
     Toast.makeText(context, stringRes, Toast.LENGTH_SHORT).show()
 }
