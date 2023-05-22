@@ -29,8 +29,8 @@ class MainViewModel(
     private val networkStatusTracker: NetworkStatusTracker = NetworkStatusTracker
 
 
-    val netStateFlow = MutableStateFlow<Boolean>(false)
-    private val netAvailableFlow = networkStatusTracker.networkStatus
+    val netStateFlow = networkStatusTracker.networkStatus
+    //private val netAvailableFlow = networkStatusTracker.networkStatus
 
 
     init {
