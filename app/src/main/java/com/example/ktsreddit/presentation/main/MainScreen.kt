@@ -46,7 +46,7 @@ fun MainPageScreen(
 @Composable
 fun ComposeMainScreen(viewModel: MainViewModel) {
     val mainListState by viewModel.mainListState.collectAsStateWithLifecycle()
-    val netStatus by viewModel.netStateFlow.collectAsStateWithLifecycle(false)
+    val netStatus by viewModel.networkFlow.collectAsStateWithLifecycle()
     MainPage(
         mainListState,
         viewModel::toggleMainListLike,

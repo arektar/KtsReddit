@@ -1,11 +1,11 @@
 package com.example.ktsreddit.presentation.main
 
-import com.example.ktsreddit.data.network.NetworkStatusTracker
 import android.annotation.SuppressLint
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ktsreddit.data.RedditRepository
+import com.example.ktsreddit.data.network.NetworkStatusTracker
 import com.example.ktsreddit.presentation.common.items.reddit.LikeState
 import com.example.ktsreddit.presentation.common.items.reddit.QuerySubreddit
 import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
@@ -32,11 +32,13 @@ class MainViewModel(
 
     private val repository = RedditRepository()
 
-    private val networkStatusTracker: NetworkStatusTracker = NetworkStatusTracker
 
-
-    val netStateFlow = networkStatusTracker.networkStatus
-    //private val netAvailableFlow = networkStatusTracker.networkStatus
+    val networkFlow: StateFlow<Boolean>
+        get() = NetworkStatusTracker.networkFlow.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = NetworkStatusTracker.getCurrentStatus()
+        )
 
 
     init {
@@ -44,7 +46,7 @@ class MainViewModel(
 
     }
 
-    private fun initPostsProcess(){
+    private fun initPostsProcess() {
         viewModelScope.launch {
 
             queryFlow.map {
