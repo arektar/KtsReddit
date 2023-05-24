@@ -1,7 +1,7 @@
 package com.example.ktsreddit.presentation.onboarding
 
 import androidx.lifecycle.ViewModel
-import com.example.ktsreddit.presentation.common.navigation.NavigateEvent
+import com.example.ktsreddit.presentation.common.navigation.NawRoute
 import com.example.ktsreddit.presentation.common.utils.OneTimeEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -9,13 +9,13 @@ import kotlinx.coroutines.flow.receiveAsFlow
 class OnBoardingViewModel:ViewModel() {
 
 
-    private val mutableNavEvent = OneTimeEvent<NavigateEvent>()
-    val navEvents: Flow<NavigateEvent>
+    private val mutableNavEvent = OneTimeEvent<NawRoute>()
+    val navEvents: Flow<NawRoute>
         get() = mutableNavEvent.receiveAsFlow()
 
 
     fun onNextClick() {
-        mutableNavEvent.trySend(NavigateEvent.NavigateToAuth)
+        mutableNavEvent.trySend(NawRoute.Auth)
     }
 
 }

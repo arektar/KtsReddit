@@ -11,17 +11,17 @@ import com.example.ktsreddit.presentation.onboarding.OnBoardingScreen
 @Composable
 fun NavRoot() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Route.Onboarding.stringRoute) {
+    NavHost(navController = navController, startDestination = NawRoute.Onboarding.stringRoute) {
 
-        composable(Route.Onboarding.stringRoute) { OnBoardingScreen(navController) }
+        composable(NawRoute.Onboarding.stringRoute) { OnBoardingScreen(navController) }
 
-        composable(Route.Auth.stringRoute) { AuthScreen(navController) }
-        composable(Route.Main.stringRoute) { MainPageScreen(navController) }
+        composable(NawRoute.Auth.stringRoute) { AuthScreen(navController) }
+        composable(NawRoute.Main.stringRoute) { MainPageScreen(navController) }
 
     }
 }
 
-enum class Route(val stringRoute: String) {
+enum class NawRoute(val stringRoute: String) {
     Onboarding("onboarding"),
     Auth("auth"),
     Main("main"),

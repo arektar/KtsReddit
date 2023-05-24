@@ -1,6 +1,7 @@
 package com.example.ktsreddit.presentation.auth
 
 import android.app.Application
+import android.content.Intent
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
@@ -8,12 +9,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.ktsreddit.BuildConfig
 import com.example.ktsreddit.R
 import com.example.ktsreddit.data.auth.models.*
-import com.example.ktsreddit.presentation.common.navigation.NavigateEvent
+import com.example.ktsreddit.presentation.common.navigation.NawRoute
 import com.example.ktsreddit.presentation.common.utils.OneTimeEvent
 import com.kts.github.data.auth.AuthRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import net.openid.appauth.AuthorizationException
+import net.openid.appauth.AuthorizationResponse
 import net.openid.appauth.AuthorizationService
 import net.openid.appauth.TokenRequest
 import timber.log.Timber
@@ -24,8 +26,8 @@ class AuthViewModel(application: Application, private val savedStateHandle: Save
     private val _authState = MutableStateFlow(DEFAULT_AUTH_STATE)
     val authState: StateFlow<UIAuthState> = _authState.asStateFlow()
 
-    private val mutableNavEvent = OneTimeEvent<NavigateEvent>()
-    val navEvents: Flow<NavigateEvent>
+    private val mutableNavEvent = OneTimeEvent<NawRoute>()
+    val navEvents: Flow<NawRoute>
         get() = mutableNavEvent.receiveAsFlow()
 
 
@@ -98,7 +100,7 @@ class AuthViewModel(application: Application, private val savedStateHandle: Save
     }
 
     fun navigateNext() {
-        mutableNavEvent.trySend(NavigateEvent.NavigateToMain)
+        mutableNavEvent.trySend(NawRoute.Main)
     }
 
 
@@ -106,6 +108,25 @@ class AuthViewModel(application: Application, private val savedStateHandle: Save
         val DEFAULT_AUTH_STATE = UIAuthState()
         private const val AUTH_EVENTS_SAVE_KEY = "AUTH_EVENTS_SAVE_KEY"
         val DEFAULT_AUTH_EVENTS = AuthDefault
+    }
+
+    fun handleAuthResponseIntent(
+        intent: Intent,
+        onAuthCodeFailed: (AuthorizationException) -> Unit,
+        onAuthCodeReceived: (TokenRequest) -> Unit
+    ) {
+        // пытаемся получить ошибку из ответа. null - если все ок
+        val exception = AuthorizationException.fromIntent(intent)
+        // пытаемся получить запрос для обмена кода на токен, null - если произошла ошибка
+        val tokenExchangeRequest = AuthorizationResponse.fromIntent(intent)
+            ?.createTokenExchangeRequest()
+        when {
+            // авторизация завершались ошибкой
+            exception != null -> onAuthCodeFailed(exception)
+            // авторизация прошла успешно, меняем код на токен
+            tokenExchangeRequest != null ->
+                onAuthCodeReceived(tokenExchangeRequest)
+        }
     }
 
 }

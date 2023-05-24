@@ -25,10 +25,6 @@ import com.example.ktsreddit.data.auth.models.*
 import com.example.ktsreddit.presentation.common.compose.toast
 import com.example.ktsreddit.presentation.common.compose_theme.KtsRedditTheme
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
-import net.openid.appauth.AuthorizationException
-import net.openid.appauth.AuthorizationResponse
-import net.openid.appauth.TokenRequest
 
 
 @Composable
@@ -46,7 +42,7 @@ fun AuthScreen(
     val getAuthResponse =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             val dataIntent = it.data ?: return@rememberLauncherForActivityResult
-            handleAuthResponseIntent(
+            viewModel.handleAuthResponseIntent(
                 dataIntent,
                 viewModel::onAuthCodeFailed,
                 viewModel::onAuthCodeReceived
@@ -60,57 +56,41 @@ fun AuthScreen(
 
 
 
-
-
     fun openAuthPage(intent: Intent) {
         getAuthResponse.launch(intent)
     }
 
-
-    suspend fun bindViewModel(openAuthEventsFlow: Flow<AuthEvent>, navigateNext: () -> Unit) {
-        openAuthEventsFlow.collect() {
-            when (it) {
-                is AuthToast -> {
-                    toast(it.toast,context)
+    @Composable
+    fun observeAuthEvents(openAuthEventsFlow: Flow<AuthEvent>, navigateNext: () -> Unit) {
+        LaunchedEffect(key1 = Unit) {
+            openAuthEventsFlow.collect { event ->
+                when (event) {
+                    is AuthToast -> {
+                        toast(event.toast, context)
+                    }
+                    is AuthIntent -> {
+                        openAuthPage(event.intent)
+                    }
+                    is AuthSuccess -> navigateNext()
+                    is AuthDefault -> {}
                 }
-                is AuthIntent -> {
-                    openAuthPage(it.intent)
-                }
-                is AuthSuccess -> navigateNext()
-                is AuthDefault -> {}
             }
         }
     }
 
+    observeAuthEvents(openAuthEventsFlow, viewModel::navigateNext)
+
     LaunchedEffect(key1 = Unit) {
-        launch{ bindViewModel(openAuthEventsFlow, viewModel::navigateNext) }
 
         viewModel.navEvents.collect { event ->
-            event.navigate(navController)
+            navController.navigate(event.stringRoute)
         }
     }
 
 
 }
 
-fun handleAuthResponseIntent(
-    intent: Intent,
-    onAuthCodeFailed: (AuthorizationException) -> Unit,
-    onAuthCodeReceived: (TokenRequest) -> Unit
-) {
-    // пытаемся получить ошибку из ответа. null - если все ок
-    val exception = AuthorizationException.fromIntent(intent)
-    // пытаемся получить запрос для обмена кода на токен, null - если произошла ошибка
-    val tokenExchangeRequest = AuthorizationResponse.fromIntent(intent)
-        ?.createTokenExchangeRequest()
-    when {
-        // авторизация завершались ошибкой
-        exception != null -> onAuthCodeFailed(exception)
-        // авторизация прошла успешно, меняем код на токен
-        tokenExchangeRequest != null ->
-            onAuthCodeReceived(tokenExchangeRequest)
-    }
-}
+
 
 
 @Composable

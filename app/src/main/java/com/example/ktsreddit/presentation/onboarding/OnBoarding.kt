@@ -36,7 +36,7 @@ fun OnBoardingScreen(
 
     LaunchedEffect(key1 = Unit) {
         viewModel.navEvents.collect { event ->
-            event.navigate(navController)
+            navController.navigate(event.stringRoute)
         }
     }
 }
