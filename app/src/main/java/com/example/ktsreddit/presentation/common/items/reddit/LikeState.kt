@@ -26,6 +26,14 @@ enum class LikeState(var isLike: Boolean?, var plusScore: Int, var likeVote: Int
             }
         }
 
+        fun getBoolFromLike(liked:LikeState):Boolean? {
+            return when (liked) {
+                Disliked -> false
+                NotSet -> null
+                Liked -> true
+            }
+        }
+
     }
 
 
