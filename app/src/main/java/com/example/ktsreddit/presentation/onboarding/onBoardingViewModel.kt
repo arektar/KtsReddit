@@ -1,6 +1,7 @@
 package com.example.ktsreddit.presentation.onboarding
 
 import androidx.lifecycle.ViewModel
+import com.example.ktsreddit.data.storage.shared.SharedWorker
 import com.example.ktsreddit.presentation.common.navigation.NawRoute
 import com.example.ktsreddit.presentation.common.utils.OneTimeEvent
 import kotlinx.coroutines.flow.Flow
@@ -13,9 +14,27 @@ class OnBoardingViewModel:ViewModel() {
     val navEvents: Flow<NawRoute>
         get() = mutableNavEvent.receiveAsFlow()
 
+    val sharedMem = SharedWorker
+
 
     fun onNextClick() {
+        sharedMem.setIgnoreOnBoarding(true)
         mutableNavEvent.trySend(NawRoute.Auth)
     }
+
+    private fun checkIgnoreOnBoarding(){
+        if (sharedMem.getIgnoreOnBoarding()){
+            mutableNavEvent.trySend(NawRoute.Auth)
+        }
+    }
+
+    init {
+        checkIgnoreOnBoarding()
+
+    }
+
+
+
+
 
 }

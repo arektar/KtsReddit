@@ -12,6 +12,7 @@ import com.example.ktsreddit.data.auth.models.*
 import com.example.ktsreddit.presentation.common.navigation.NawRoute
 import com.example.ktsreddit.presentation.common.utils.OneTimeEvent
 import com.kts.github.data.auth.AuthRepository
+import com.kts.github.data.auth.TokenStorage
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import net.openid.appauth.AuthorizationException
@@ -34,7 +35,7 @@ class AuthViewModel(application: Application, private val savedStateHandle: Save
     private val authRepository = AuthRepository()
     private val authService: AuthorizationService = AuthorizationService(getApplication())
 
-    val authEvents:Flow<AuthEvent> = savedStateHandle.getStateFlow(
+    val authEvents: Flow<AuthEvent> = savedStateHandle.getStateFlow(
         AUTH_EVENTS_SAVE_KEY,
         DEFAULT_AUTH_EVENTS
     )
@@ -77,6 +78,7 @@ class AuthViewModel(application: Application, private val savedStateHandle: Save
     }
 
     fun openLoginPage() {
+
         val customTabsIntent = CustomTabsIntent.Builder().build()
 
         val authRequest = authRepository.getAuthRequest()
@@ -92,6 +94,13 @@ class AuthViewModel(application: Application, private val savedStateHandle: Save
         //openAuthPageEventChannel.trySendBlocking(openAuthPageIntent)
         sendAuthEvent(AuthIntent(openAuthPageIntent))
         Timber.tag("Oauth").d("2. Open auth page: ${authRequest.toUri()}")
+
+    }
+
+    fun skipForAuthorized() {
+        if (TokenStorage.accessToken != null) {
+            navigateNext()
+        }
     }
 
     override fun onCleared() {
@@ -125,6 +134,10 @@ class AuthViewModel(application: Application, private val savedStateHandle: Save
             tokenExchangeRequest != null ->
                 onAuthCodeReceived(tokenExchangeRequest)
         }
+    }
+
+    init {
+        skipForAuthorized()
     }
 
 }
