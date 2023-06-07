@@ -1,7 +1,6 @@
-package com.swallow.cracker.data.model
+package com.example.ktsreddit.data.network.model.Reddit
 
 import android.os.Parcelable
-import com.example.ktsreddit.data.network.model.RedditChildrenPreviewImageSource
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.parcelize.Parcelize

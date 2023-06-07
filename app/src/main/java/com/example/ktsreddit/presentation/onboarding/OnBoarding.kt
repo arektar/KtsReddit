@@ -1,15 +1,13 @@
 package com.example.ktsreddit.presentation.onboarding
 
 
-import com.example.ktsreddit.presentation.common.compose.base.BaseComposeFragment
 import android.content.res.Configuration
-import android.os.Bundle
-import android.view.View
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -20,36 +18,29 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
 import com.example.ktsreddit.R
 import com.example.ktsreddit.presentation.common.compose_theme.KtsRedditTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 
 
-class OnBoardingFragment : BaseComposeFragment() {
+@Composable
+fun OnBoardingScreen(
+    navController: NavController,
+    viewModel: OnBoardingViewModel = viewModel(),
+) {
+    OnBoardingPager(navigateNext = viewModel::onNextClick)
 
 
-    private lateinit var navController: NavController
-
-    @Composable
-    override fun ComposeScreen() {
-        //OnBoarding(::navigateNext)
-        OnBoardingPager(navigateNext = ::navigateNext)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        navController = findNavController()
-    }
-
-    private fun navigateNext() {
-        navController.navigate(
-            OnBoardingFragmentDirections.actionOnBoardingFragmentToAuthorisationFragment()
-        )
+    LaunchedEffect(key1 = Unit) {
+        viewModel.navEvents.collect { event ->
+            navController.navigate(event.stringRoute)
+        }
     }
 }
+
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable

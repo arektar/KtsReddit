@@ -5,10 +5,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ktsreddit.data.RedditRepository
+import com.example.ktsreddit.data.network.NetworkStatusTracker
 import com.example.ktsreddit.presentation.common.items.reddit.LikeState
-
-import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
 import com.example.ktsreddit.presentation.common.items.reddit.QuerySubreddit
+import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
+import com.example.ktsreddit.presentation.common.navigation.NawRoute
+import com.example.ktsreddit.presentation.common.utils.OneTimeEvent
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -19,6 +21,10 @@ class MainViewModel(
     val mainListState: StateFlow<List<RedditItem>> =
         savedStateHandle.getStateFlow(MAIN_LIST_SUBREDDIT_KEY, DEFAULT_MAIN_LIST_STATE)
 
+    private val mutableNavEvent = OneTimeEvent<NawRoute>()
+    val navEvents: Flow<NawRoute>
+        get() = mutableNavEvent.receiveAsFlow()
+
 
     private val queryFlow: StateFlow<QuerySubreddit> =
         savedStateHandle.getStateFlow(QUERY_SUBREDDIT, DEFAULT_REDDIT_QUERY)
@@ -27,7 +33,20 @@ class MainViewModel(
     private val repository = RedditRepository()
 
 
+    val networkFlow: StateFlow<Boolean>
+        get() = NetworkStatusTracker.networkFlow.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = NetworkStatusTracker.getCurrentStatus()
+        )
+
+
     init {
+        initPostsProcess()
+
+    }
+
+    private fun initPostsProcess() {
         viewModelScope.launch {
 
             queryFlow.map {
@@ -38,6 +57,7 @@ class MainViewModel(
 
         }
     }
+
 
     fun searchPosts() {
         savedStateHandle[QUERY_SUBREDDIT] = DEFAULT_REDDIT_QUERY
@@ -87,5 +107,3 @@ class MainViewModel(
 
     }
 }
-
-
