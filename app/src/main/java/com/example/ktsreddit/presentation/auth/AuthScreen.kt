@@ -21,10 +21,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.ktsreddit.R
-import com.example.ktsreddit.data.auth.models.*
+import com.example.ktsreddit.data.auth.models.AuthDefault
+import com.example.ktsreddit.data.auth.models.AuthIntent
+import com.example.ktsreddit.data.auth.models.AuthSuccess
+import com.example.ktsreddit.data.auth.models.AuthToast
 import com.example.ktsreddit.presentation.common.compose.toast
 import com.example.ktsreddit.presentation.common.compose_theme.KtsRedditTheme
-import kotlinx.coroutines.flow.Flow
 
 
 @Composable
@@ -35,7 +37,6 @@ fun AuthScreen(
 
 
     val authState by viewModel.authState.collectAsState()
-    val openAuthEventsFlow =  viewModel.openAuthEventsFlow
 
     val context = LocalContext.current
 
@@ -43,9 +44,7 @@ fun AuthScreen(
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             val dataIntent = it.data ?: return@rememberLauncherForActivityResult
             viewModel.handleAuthResponseIntent(
-                dataIntent,
-                viewModel::onAuthCodeFailed,
-                viewModel::onAuthCodeReceived
+                dataIntent
             )
         }
 
@@ -60,30 +59,27 @@ fun AuthScreen(
         getAuthResponse.launch(intent)
     }
 
-    @Composable
-    fun observeAuthEvents(openAuthEventsFlow: Flow<AuthEvent>, navigateNext: () -> Unit) {
-        LaunchedEffect(key1 = Unit) {
-            openAuthEventsFlow.collect { event ->
-                when (event) {
-                    is AuthToast -> {
-                        toast(event.toast, context)
-                    }
-                    is AuthIntent -> {
-                        openAuthPage(event.intent)
-                    }
-                    is AuthSuccess -> navigateNext()
-                    is AuthDefault -> {}
-                }
-            }
-        }
-    }
 
-    observeAuthEvents(openAuthEventsFlow, viewModel::navigateNext)
 
     LaunchedEffect(key1 = Unit) {
 
         viewModel.navEvents.collect { event ->
             navController.navigate(event.stringRoute)
+        }
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.authEvents.collect { event ->
+            when (event) {
+                is AuthToast -> {
+                    toast(event.toast, context)
+                }
+                is AuthIntent -> {
+                    openAuthPage(event.intent)
+                }
+                is AuthSuccess -> viewModel.navigateNext()
+                is AuthDefault -> {}
+            }
         }
     }
 

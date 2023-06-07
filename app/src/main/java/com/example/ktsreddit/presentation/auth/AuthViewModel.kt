@@ -34,7 +34,7 @@ class AuthViewModel(application: Application, private val savedStateHandle: Save
     private val authRepository = AuthRepository()
     private val authService: AuthorizationService = AuthorizationService(getApplication())
 
-    val openAuthEventsFlow: Flow<AuthEvent> = savedStateHandle.getStateFlow(
+    val authEvents:Flow<AuthEvent> = savedStateHandle.getStateFlow(
         AUTH_EVENTS_SAVE_KEY,
         DEFAULT_AUTH_EVENTS
     )
@@ -45,7 +45,7 @@ class AuthViewModel(application: Application, private val savedStateHandle: Save
     }
 
 
-    fun onAuthCodeFailed(exception: AuthorizationException) {
+    fun onAuthCodeFailed() {
         sendAuthEvent(AuthToast(R.string.auth_failed))
     }
 
@@ -111,9 +111,7 @@ class AuthViewModel(application: Application, private val savedStateHandle: Save
     }
 
     fun handleAuthResponseIntent(
-        intent: Intent,
-        onAuthCodeFailed: (AuthorizationException) -> Unit,
-        onAuthCodeReceived: (TokenRequest) -> Unit
+        intent: Intent
     ) {
         // пытаемся получить ошибку из ответа. null - если все ок
         val exception = AuthorizationException.fromIntent(intent)
@@ -122,7 +120,7 @@ class AuthViewModel(application: Application, private val savedStateHandle: Save
             ?.createTokenExchangeRequest()
         when {
             // авторизация завершались ошибкой
-            exception != null -> onAuthCodeFailed(exception)
+            exception != null -> onAuthCodeFailed()
             // авторизация прошла успешно, меняем код на токен
             tokenExchangeRequest != null ->
                 onAuthCodeReceived(tokenExchangeRequest)
