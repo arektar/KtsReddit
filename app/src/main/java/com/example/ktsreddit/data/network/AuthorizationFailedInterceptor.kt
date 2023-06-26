@@ -1,7 +1,7 @@
 package com.kts.github.data.network
 
+import com.example.ktsreddit.data.storage.shared.KeyValueStorage
 import com.kts.github.data.auth.AppAuth
-import com.kts.github.data.auth.TokenStorage
 import kotlinx.coroutines.runBlocking
 import net.openid.appauth.AuthorizationService
 import okhttp3.Interceptor
@@ -13,7 +13,6 @@ import java.util.concurrent.TimeUnit
 
 class AuthorizationFailedInterceptor(
     private val authorizationService: AuthorizationService,
-    private val tokenStorage: TokenStorage
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -74,14 +73,14 @@ class AuthorizationFailedInterceptor(
 
         val tokenRefreshed = runBlocking {
             runCatching {
-                val refreshRequest = AppAuth.getRefreshTokenRequest(tokenStorage.refreshToken.orEmpty())
+                val refreshRequest = AppAuth.getRefreshTokenRequest(KeyValueStorage.getRefreshToken().orEmpty())
                 AppAuth.performTokenRequestSuspend(authorizationService, refreshRequest)
             }
                 .getOrNull()
                 ?.let { tokens ->
-                    TokenStorage.accessToken = tokens.accessToken
-                    TokenStorage.refreshToken = tokens.refreshToken
-                    TokenStorage.idToken = tokens.idToken
+                    KeyValueStorage.setAuthToken(tokens.accessToken)
+                    KeyValueStorage.setRefreshToken(tokens.refreshToken)
+
                     true
                 } ?: false
         }
@@ -97,7 +96,7 @@ class AuthorizationFailedInterceptor(
     }
 
     private fun updateOriginalCallWithNewToken(request: Request): Request {
-        return tokenStorage.accessToken?.let { newAccessToken ->
+        return KeyValueStorage.getAuthToken()?.let { newAccessToken ->
             request
                 .newBuilder()
                 .header("Authorization", newAccessToken)

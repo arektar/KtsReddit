@@ -3,6 +3,9 @@ package com.example.ktsreddit.data
 import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
 import com.example.ktsreddit.data.network.Networking
 import com.example.ktsreddit.data.network.model.Reddit.RedditMapper
+import com.example.ktsreddit.data.storage.db.DatabaseWorker
+import com.example.ktsreddit.presentation.common.items.reddit.QuerySubreddit
+import com.example.ktsreddit.presentation.common.items.reddit.RedditListSimpleItem
 import retrofit2.Response
 
 class RedditRepository {
@@ -26,6 +29,8 @@ class RedditRepository {
     }
 
 
+    var dbWorker = DatabaseWorker
+
     suspend fun savePost(category: String?, id: String) {
         Networking.redditApiOAuth.savedPost(category = category, id = id)
     }
@@ -41,6 +46,25 @@ class RedditRepository {
     suspend fun votePost(dir: Int, id: String) {
         Networking.redditApiOAuth.votePost(dir = dir.toString(), id = id)
     }
+
+    suspend fun getPosts(
+        query: QuerySubreddit,
+        setFromDbStatus: (Boolean) -> Unit
+    ): List<RedditItem> {
+        try {
+            val items = simpleGetSubreddit(query.subreddit, query.category, query.limit)
+            dbWorker.saveSimpleItems(items.filterIsInstance<RedditListSimpleItem>())
+            setFromDbStatus(false)
+
+            return items
+
+        } catch (e: Exception) {
+            val items = dbWorker.getSimpleItems()
+            setFromDbStatus(true)
+            return items
+        }
+    }
+
 
     companion object {
         const val REQUEST_COUNT: Int = 20

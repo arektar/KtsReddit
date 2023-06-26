@@ -139,7 +139,7 @@ fun FromDbStatus(isFromDatabase: Boolean) {
                 .background(Color(R.color.black))
                 .padding(5.dp)) {
             Text(
-                text = "отображаются данные из локального хранилища",
+                text = "Отображаются данные из локального хранилища",
                 color = Color.White,
                 modifier = Modifier
                     .fillMaxWidth()

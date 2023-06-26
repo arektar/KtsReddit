@@ -6,11 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ktsreddit.data.RedditRepository
 import com.example.ktsreddit.data.network.NetworkStatusTracker
-import com.example.ktsreddit.data.storage.db.DatabaseWorker
 import com.example.ktsreddit.presentation.common.items.reddit.LikeState
 import com.example.ktsreddit.presentation.common.items.reddit.QuerySubreddit
 import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
-import com.example.ktsreddit.presentation.common.items.reddit.RedditListSimpleItem
 import com.example.ktsreddit.presentation.common.navigation.NawRoute
 import com.example.ktsreddit.presentation.common.utils.OneTimeEvent
 import kotlinx.coroutines.Dispatchers
@@ -35,8 +33,6 @@ class MainViewModel(
 
     private val repository = RedditRepository()
 
-    private val dbWorker = DatabaseWorker
-
 
     val networkFlow: StateFlow<Boolean>
         get() = NetworkStatusTracker.networkFlow.stateIn(
@@ -45,7 +41,8 @@ class MainViewModel(
             initialValue = NetworkStatusTracker.getCurrentStatus()
         )
 
-    val fromDbStatusFlow: StateFlow<Boolean> = savedStateHandle.getStateFlow(FROM_DB_STATUS_KEY, false)
+    val fromDbStatusFlow: StateFlow<Boolean> =
+        savedStateHandle.getStateFlow(FROM_DB_STATUS_KEY, false)
 
 
     init {
@@ -53,23 +50,13 @@ class MainViewModel(
 
     }
 
-    fun setFromDbStatus(status:Boolean){
+    private fun setFromDbStatus(status: Boolean) {
         savedStateHandle[FROM_DB_STATUS_KEY] = status
     }
 
-    suspend fun getSubreddit(query:QuerySubreddit):List<RedditItem> {
-        try {
-            val items = repository.simpleGetSubreddit(query.subreddit, query.category, query.limit)
-            dbWorker.saveSimpleItems(items.filterIsInstance<RedditListSimpleItem>())
-            setFromDbStatus(false)
-            return items
+    private suspend fun getSubreddit(query: QuerySubreddit): List<RedditItem> {
 
-        } catch (e: Exception) {
-            val items = dbWorker.getSimpleItems()
-            setFromDbStatus(true)
-            return items
-
-        }
+        return repository.getPosts(query, ::setFromDbStatus)
 
     }
 
@@ -131,7 +118,7 @@ class MainViewModel(
 
         private const val QUERY_SUBREDDIT = "QUERY_SUBREDDIT"
         private const val MAIN_LIST_SUBREDDIT_KEY = "MAIN_LIST_SUBREDDIT"
-        private  const val FROM_DB_STATUS_KEY = "GOT_FROM_DB"
+        private const val FROM_DB_STATUS_KEY = "GOT_FROM_DB"
         val DEFAULT_REDDIT_QUERY = QuerySubreddit("Popular", "top", 20)
 
     }

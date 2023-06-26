@@ -9,10 +9,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.ktsreddit.BuildConfig
 import com.example.ktsreddit.R
 import com.example.ktsreddit.data.auth.models.*
+import com.example.ktsreddit.data.storage.shared.KeyValueStorage
 import com.example.ktsreddit.presentation.common.navigation.NawRoute
 import com.example.ktsreddit.presentation.common.utils.OneTimeEvent
 import com.kts.github.data.auth.AuthRepository
-import com.kts.github.data.auth.TokenStorage
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import net.openid.appauth.AuthorizationException
@@ -97,8 +97,8 @@ class AuthViewModel(application: Application, private val savedStateHandle: Save
 
     }
 
-    fun skipForAuthorized() {
-        if (TokenStorage.accessToken != null) {
+    private fun skipForAuthorized() {
+        if (KeyValueStorage.getAuthToken() != null) {
             navigateNext()
         }
     }
