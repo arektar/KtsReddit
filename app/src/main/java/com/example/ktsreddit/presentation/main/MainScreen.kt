@@ -27,7 +27,7 @@ import com.example.ktsreddit.presentation.common.compose.mainlist.SimpleMpItemVi
 import com.example.ktsreddit.presentation.common.compose_theme.KtsRedditTheme
 import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
 import com.example.ktsreddit.presentation.common.items.reddit.RedditListItemImage
-import com.example.ktsreddit.presentation.common.items.reddit.RedditListSimpleItem
+import com.example.ktsreddit.presentation.common.items.reddit.RedditPost
 
 @Composable
 fun MainPageScreen(
@@ -47,11 +47,14 @@ fun MainPageScreen(
 fun ComposeMainScreen(viewModel: MainViewModel) {
     val mainListState by viewModel.mainListState.collectAsStateWithLifecycle()
     val netStatus by viewModel.networkFlow.collectAsStateWithLifecycle()
+    val fromDbStatus by viewModel.fromDbStatusFlow.collectAsStateWithLifecycle()
+
     MainPage(
         mainListState,
         viewModel::toggleMainListLike,
         viewModel::toggleMainListDislike,
-        netStatus
+        netStatus,
+        fromDbStatus
     )
 }
 
@@ -62,7 +65,8 @@ fun MainPage(
     mainPageListPaged: List<RedditItem>,
     onLikeClick: (RedditItem) -> Unit,
     onDislikeClick: (RedditItem) -> Unit,
-    netStatus: Boolean
+    netStatus: Boolean,
+    fromDbStatus: Boolean
 ) {
 
 
@@ -81,6 +85,7 @@ fun MainPage(
         Column() {
 
             NetStatus(netStatus)
+            FromDbStatus(fromDbStatus)
 
             LazyColumn(Modifier.fillMaxSize()) {
                 items(
@@ -89,7 +94,7 @@ fun MainPage(
                     contentType = { it::class.java.name }
                 ) {
                     when (it) {
-                        is RedditListSimpleItem -> {
+                        is RedditPost -> {
                             SimpleMpItemView(it, onLikeClick, onDislikeClick)
                         }
                         is RedditListItemImage -> {
@@ -125,6 +130,27 @@ fun NetStatus(isNetwork: Boolean) {
     }
 }
 
+@Composable
+fun FromDbStatus(isFromDatabase: Boolean) {
+    if (isFromDatabase) {
+        Card(
+            Modifier
+                .fillMaxWidth()
+                .background(Color(R.color.black))
+                .padding(5.dp)) {
+            Text(
+                text = "Отображаются данные из локального хранилища",
+                color = Color.White,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(R.color.black)),
+                textAlign = TextAlign.Center,
+            )
+        }
+
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun MainPreview() {
@@ -132,7 +158,7 @@ fun MainPreview() {
         val mainListState = emptyList<RedditItem>()
         MainPage(
             mainListState,
-            { }, { }, false
+            { }, { }, false, false
         )
     }
 }

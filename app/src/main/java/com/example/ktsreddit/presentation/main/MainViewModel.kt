@@ -11,6 +11,7 @@ import com.example.ktsreddit.presentation.common.items.reddit.QuerySubreddit
 import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
 import com.example.ktsreddit.presentation.common.navigation.NawRoute
 import com.example.ktsreddit.presentation.common.utils.OneTimeEvent
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -40,19 +41,33 @@ class MainViewModel(
             initialValue = NetworkStatusTracker.getCurrentStatus()
         )
 
+    val fromDbStatusFlow: StateFlow<Boolean> =
+        savedStateHandle.getStateFlow(FROM_DB_STATUS_KEY, false)
+
 
     init {
         initPostsProcess()
 
     }
 
+    private fun setFromDbStatus(status: Boolean) {
+        savedStateHandle[FROM_DB_STATUS_KEY] = status
+    }
+
+    private suspend fun getSubreddit(query: QuerySubreddit): List<RedditItem> {
+
+        return repository.getPosts(query, ::setFromDbStatus)
+
+    }
+
     private fun initPostsProcess() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
 
             queryFlow.map {
-                repository.simpleGetSubreddit(it.subreddit, it.category, it.limit)
+                getSubreddit(it)
             }.onEach {
                 savedStateHandle[MAIN_LIST_SUBREDDIT_KEY] = it
+
             }.collect()
 
         }
@@ -103,6 +118,7 @@ class MainViewModel(
 
         private const val QUERY_SUBREDDIT = "QUERY_SUBREDDIT"
         private const val MAIN_LIST_SUBREDDIT_KEY = "MAIN_LIST_SUBREDDIT"
+        private const val FROM_DB_STATUS_KEY = "GOT_FROM_DB"
         val DEFAULT_REDDIT_QUERY = QuerySubreddit("Popular", "top", 20)
 
     }
