@@ -5,7 +5,7 @@ import com.example.ktsreddit.presentation.common.utils.convertLongToTime
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class RedditListSimpleItem(
+data class RedditPost(
     override val id: String,
     val t3_id: String,
     val author: String,

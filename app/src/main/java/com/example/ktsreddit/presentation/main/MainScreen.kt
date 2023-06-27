@@ -27,7 +27,7 @@ import com.example.ktsreddit.presentation.common.compose.mainlist.SimpleMpItemVi
 import com.example.ktsreddit.presentation.common.compose_theme.KtsRedditTheme
 import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
 import com.example.ktsreddit.presentation.common.items.reddit.RedditListItemImage
-import com.example.ktsreddit.presentation.common.items.reddit.RedditListSimpleItem
+import com.example.ktsreddit.presentation.common.items.reddit.RedditPost
 
 @Composable
 fun MainPageScreen(
@@ -94,7 +94,7 @@ fun MainPage(
                     contentType = { it::class.java.name }
                 ) {
                     when (it) {
-                        is RedditListSimpleItem -> {
+                        is RedditPost -> {
                             SimpleMpItemView(it, onLikeClick, onDislikeClick)
                         }
                         is RedditListItemImage -> {

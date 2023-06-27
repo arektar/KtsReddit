@@ -3,7 +3,7 @@ package com.example.ktsreddit.data.network.model.Reddit
 import com.example.ktsreddit.presentation.common.items.reddit.LikeState.Companion.getLikedByBool
 import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
 import com.example.ktsreddit.presentation.common.items.reddit.RedditListItemImage
-import com.example.ktsreddit.presentation.common.items.reddit.RedditListSimpleItem
+import com.example.ktsreddit.presentation.common.items.reddit.RedditPost
 
 object RedditMapper {
     fun mapApiToUi(item: RedditNewsDataResponse): RedditItem {
@@ -24,7 +24,7 @@ object RedditMapper {
                 url = item.url,
                 preview = item.preview
             )
-            else -> RedditListSimpleItem(
+            else -> RedditPost(
                 id = item.id,
                 t3_id = item.t3_id,
                 author = item.author,

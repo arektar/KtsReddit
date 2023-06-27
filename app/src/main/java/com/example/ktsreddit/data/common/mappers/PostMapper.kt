@@ -1,13 +1,13 @@
 package com.example.ktsreddit.data.common.mappers
 
-import com.example.ktsreddit.data.storage.db.SimpleItemEnt
+import com.example.ktsreddit.data.storage.db.PostEnt
 import com.example.ktsreddit.presentation.common.items.reddit.LikeState
-import com.example.ktsreddit.presentation.common.items.reddit.RedditListSimpleItem
+import com.example.ktsreddit.presentation.common.items.reddit.RedditPost
 
-object RedditListSimpleItemMapper : Mapper<RedditListSimpleItem, SimpleItemEnt> {
+object PostMapper : Mapper<PostEnt, RedditPost> {
 
-    override fun map(item: RedditListSimpleItem): SimpleItemEnt {
-        return SimpleItemEnt(
+    override fun map(item: PostEnt): RedditPost {
+        return RedditPost(
             id = item.id,
             t3_id = item.t3_id,
             author = item.author,
@@ -15,11 +15,15 @@ object RedditListSimpleItemMapper : Mapper<RedditListSimpleItem, SimpleItemEnt> 
             title = item.title,
             selftext = item.selftext,
             score = item.score,
-            likes = LikeState.getBoolFromLike(item.likes),
+            likes = LikeState.getLikedByBool(item.likes),
             saved = item.saved,
             numComments = item.numComments,
             created = item.created,
             url = item.url
         )
     }
+
+
 }
+
+

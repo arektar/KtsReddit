@@ -24,12 +24,12 @@ import com.example.ktsreddit.presentation.common.compose_theme.KtsRedditTheme
 import com.example.ktsreddit.presentation.common.compose_theme.myColors
 import com.example.ktsreddit.presentation.common.items.reddit.LikeState
 import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
-import com.example.ktsreddit.presentation.common.items.reddit.RedditListSimpleItem
+import com.example.ktsreddit.presentation.common.items.reddit.RedditPost
 
 
 @Composable
 fun SimpleMpItemView(
-    elem: RedditListSimpleItem,
+    elem: RedditPost,
     onLikeClick: (RedditItem) -> Unit,
     onDislikeClick: (RedditItem) -> Unit
 ) {
@@ -86,7 +86,7 @@ fun SimpleMpItemView(
 @Preview(showBackground = true)
 @Composable
 fun ComplexMpItemPreview() {
-    val defaultElem = RedditListSimpleItem(
+    val defaultElem = RedditPost(
         "0",
         "0",
         "Test",

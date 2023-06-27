@@ -1,11 +1,12 @@
 package com.example.ktsreddit.data
 
-import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
 import com.example.ktsreddit.data.network.Networking
 import com.example.ktsreddit.data.network.model.Reddit.RedditMapper
 import com.example.ktsreddit.data.storage.db.DatabaseWorker
+import com.example.ktsreddit.data.storage.shared.KeyValueStorage
 import com.example.ktsreddit.presentation.common.items.reddit.QuerySubreddit
-import com.example.ktsreddit.presentation.common.items.reddit.RedditListSimpleItem
+import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
+import com.example.ktsreddit.presentation.common.items.reddit.RedditPost
 import retrofit2.Response
 
 class RedditRepository {
@@ -53,14 +54,16 @@ class RedditRepository {
     ): List<RedditItem> {
         try {
             val items = simpleGetSubreddit(query.subreddit, query.category, query.limit)
-            dbWorker.saveSimpleItems(items.filterIsInstance<RedditListSimpleItem>())
+            dbWorker.savePosts(items.filterIsInstance<RedditPost>())
             setFromDbStatus(false)
 
             return items
 
         } catch (e: Exception) {
-            val items = dbWorker.getSimpleItems()
+            val items = dbWorker.getPosts()
             setFromDbStatus(true)
+            KeyValueStorage.setAuthToken(null)
+            KeyValueStorage.setRefreshToken(null)
             return items
         }
     }
