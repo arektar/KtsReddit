@@ -19,10 +19,11 @@ import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationResponse
 import net.openid.appauth.AuthorizationService
 import net.openid.appauth.TokenRequest
+import org.koin.core.component.KoinComponent
 import timber.log.Timber
 
 class AuthViewModel(application: Application, private val savedStateHandle: SavedStateHandle) :
-    AndroidViewModel(application) {
+    AndroidViewModel(application), KoinComponent {
 
     private val _authState = MutableStateFlow(DEFAULT_AUTH_STATE)
     val authState: StateFlow<UIAuthState> = _authState.asStateFlow()

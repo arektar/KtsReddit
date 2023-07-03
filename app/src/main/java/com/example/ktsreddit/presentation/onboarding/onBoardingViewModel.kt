@@ -6,15 +6,17 @@ import com.example.ktsreddit.presentation.common.navigation.NawRoute
 import com.example.ktsreddit.presentation.common.utils.OneTimeEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
+import org.koin.core.component.KoinComponent
 
-class OnBoardingViewModel:ViewModel() {
+class OnBoardingViewModel(
+    private val repository: OnboardingRepository
+):ViewModel(), KoinComponent {
 
 
     private val mutableNavEvent = OneTimeEvent<NawRoute>()
     val navEvents: Flow<NawRoute>
         get() = mutableNavEvent.receiveAsFlow()
 
-    private val repository = OnboardingRepository()
 
 
     fun onNextClick() {

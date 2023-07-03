@@ -18,7 +18,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.ktsreddit.R
 import com.example.ktsreddit.data.auth.models.AuthDefault
@@ -27,12 +26,13 @@ import com.example.ktsreddit.data.auth.models.AuthSuccess
 import com.example.ktsreddit.data.auth.models.AuthToast
 import com.example.ktsreddit.presentation.common.compose.toast
 import com.example.ktsreddit.presentation.common.compose_theme.KtsRedditTheme
+import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
 fun AuthScreen(
     navController: NavController,
-    viewModel: AuthViewModel = viewModel(),
+    viewModel: AuthViewModel = koinViewModel(),
 ) {
 
 

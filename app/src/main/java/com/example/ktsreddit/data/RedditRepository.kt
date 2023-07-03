@@ -7,9 +7,10 @@ import com.example.ktsreddit.data.storage.shared.KeyValueStorage
 import com.example.ktsreddit.presentation.common.items.reddit.QuerySubreddit
 import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
 import com.example.ktsreddit.presentation.common.items.reddit.RedditPost
+import org.koin.core.component.KoinComponent
 import retrofit2.Response
 
-class RedditRepository {
+class RedditRepository: KoinComponent {
 
     suspend fun simpleGetSubreddit(
         subreddit: String,

@@ -14,10 +14,11 @@ import com.example.ktsreddit.presentation.common.utils.OneTimeEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
 
 class MainViewModel(
     private val savedStateHandle: SavedStateHandle,
-) : ViewModel() {
+) : ViewModel(), KoinComponent {
 
     val mainListState: StateFlow<List<RedditItem>> =
         savedStateHandle.getStateFlow(MAIN_LIST_SUBREDDIT_KEY, DEFAULT_MAIN_LIST_STATE)
