@@ -1,4 +1,4 @@
-package com.example.ktsreddit.presentation.main
+package com.example.ktsreddit.presentation.viewmodels
 
 import android.annotation.SuppressLint
 import androidx.lifecycle.SavedStateHandle

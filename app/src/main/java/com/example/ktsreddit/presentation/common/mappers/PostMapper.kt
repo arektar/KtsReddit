@@ -1,4 +1,4 @@
-package com.example.ktsreddit.data.common.mappers
+package com.example.ktsreddit.presentation.common.mappers
 
 import com.example.ktsreddit.data.storage.db.PostEnt
 import com.example.ktsreddit.presentation.common.items.reddit.LikeState

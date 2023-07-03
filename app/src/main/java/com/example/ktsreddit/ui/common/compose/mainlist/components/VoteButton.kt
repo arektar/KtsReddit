@@ -1,4 +1,4 @@
-package com.example.ktsreddit.presentation.common.compose.mainlist.components
+package com.example.ktsreddit.ui.common.compose.mainlist.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.material.IconButton

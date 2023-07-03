@@ -4,9 +4,9 @@ import android.app.Application
 import android.content.Context
 import com.example.ktsreddit.BuildConfig
 import com.example.ktsreddit.data.OnboardingRepository
-import com.example.ktsreddit.presentation.auth.AuthViewModel
-import com.example.ktsreddit.presentation.main.MainViewModel
+import com.example.ktsreddit.presentation.viewmodels.MainViewModel
 import com.example.ktsreddit.presentation.onboarding.OnBoardingViewModel
+import com.example.ktsreddit.presentation.viewmodels.AuthViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin

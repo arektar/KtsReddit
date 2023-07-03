@@ -1,4 +1,4 @@
-package com.example.ktsreddit.presentation.auth
+package com.example.ktsreddit.presentation.viewmodels
 
 import android.app.Application
 import android.content.Intent

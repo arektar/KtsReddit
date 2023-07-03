@@ -1,9 +1,8 @@
-package com.example.ktsreddit.presentation.common.compose
+package com.example.ktsreddit.ui.common.compose
 
 import android.content.Context
 import android.widget.Toast
 import androidx.annotation.StringRes
-import androidx.compose.runtime.Composable
 import timber.log.Timber
 
 

@@ -21,9 +21,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.ktsreddit.R
-import com.example.ktsreddit.presentation.common.compose.mainlist.ImageMpItemView
-import com.example.ktsreddit.presentation.common.compose.mainlist.SimpleMpItemView
-import com.example.ktsreddit.presentation.common.compose_theme.KtsRedditTheme
+import com.example.ktsreddit.presentation.viewmodels.MainViewModel
+import com.example.ktsreddit.ui.common.compose.mainlist.ImageMpItemView
+import com.example.ktsreddit.ui.common.compose.mainlist.SimpleMpItemView
+import com.example.ktsreddit.ui.common.compose_theme.KtsRedditTheme
 import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
 import com.example.ktsreddit.presentation.common.items.reddit.RedditListItemImage
 import com.example.ktsreddit.presentation.common.items.reddit.RedditPost
