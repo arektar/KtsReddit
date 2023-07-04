@@ -1,4 +1,4 @@
-package com.example.ktsreddit.presentation.onboarding
+package com.example.ktsreddit.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import com.example.ktsreddit.data.OnboardingRepository
@@ -10,7 +10,7 @@ import org.koin.core.component.KoinComponent
 
 class OnBoardingViewModel(
     private val repository: OnboardingRepository
-):ViewModel(), KoinComponent {
+):ViewModel() {
 
 
     private val mutableNavEvent = OneTimeEvent<NawRoute>()

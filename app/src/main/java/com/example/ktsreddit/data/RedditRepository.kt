@@ -10,7 +10,7 @@ import com.example.ktsreddit.presentation.common.items.reddit.RedditPost
 import org.koin.core.component.KoinComponent
 import retrofit2.Response
 
-class RedditRepository: KoinComponent {
+class RedditRepository {
 
     suspend fun simpleGetSubreddit(
         subreddit: String,

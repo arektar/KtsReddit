@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.ktsreddit.R
+import com.example.ktsreddit.presentation.viewmodels.OnBoardingViewModel
 import com.example.ktsreddit.ui.common.compose_theme.KtsRedditTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -29,7 +30,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun OnBoardingScreen(
     navController: NavController,
-    viewModel:OnBoardingViewModel = koinViewModel()
+    viewModel: OnBoardingViewModel = koinViewModel()
 ) {
 
 

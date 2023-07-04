@@ -3,26 +3,14 @@ package com.example.ktsreddit.app
 import android.app.Application
 import android.content.Context
 import com.example.ktsreddit.BuildConfig
-import com.example.ktsreddit.data.OnboardingRepository
-import com.example.ktsreddit.presentation.viewmodels.MainViewModel
-import com.example.ktsreddit.presentation.onboarding.OnBoardingViewModel
-import com.example.ktsreddit.presentation.viewmodels.AuthViewModel
 import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
-import org.koin.dsl.module
 import timber.log.Timber
 
 class KtsRedditApplication : Application()  {
 
 
-    private val appModule = module{
-        single <OnboardingRepository> { OnboardingRepository() }
-
-        viewModel<OnBoardingViewModel>()
-        viewModel<MainViewModel>()
-        viewModel<AuthViewModel>()
-    }
+    private val appModule = DI().getAppModule()
 
     override fun onCreate() {
         super.onCreate()

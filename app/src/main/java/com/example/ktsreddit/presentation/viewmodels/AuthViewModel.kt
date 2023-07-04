@@ -23,7 +23,7 @@ import org.koin.core.component.KoinComponent
 import timber.log.Timber
 
 class AuthViewModel(application: Application, private val savedStateHandle: SavedStateHandle) :
-    AndroidViewModel(application), KoinComponent {
+    AndroidViewModel(application) {
 
     private val _authState = MutableStateFlow(DEFAULT_AUTH_STATE)
     val authState: StateFlow<UIAuthState> = _authState.asStateFlow()

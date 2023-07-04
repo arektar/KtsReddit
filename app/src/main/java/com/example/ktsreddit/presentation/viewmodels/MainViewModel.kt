@@ -18,7 +18,8 @@ import org.koin.core.component.KoinComponent
 
 class MainViewModel(
     private val savedStateHandle: SavedStateHandle,
-) : ViewModel(), KoinComponent {
+    private val repository: RedditRepository
+) : ViewModel() {
 
     val mainListState: StateFlow<List<RedditItem>> =
         savedStateHandle.getStateFlow(MAIN_LIST_SUBREDDIT_KEY, DEFAULT_MAIN_LIST_STATE)
@@ -31,8 +32,6 @@ class MainViewModel(
     private val queryFlow: StateFlow<QuerySubreddit> =
         savedStateHandle.getStateFlow(QUERY_SUBREDDIT, DEFAULT_REDDIT_QUERY)
 
-
-    private val repository = RedditRepository()
 
 
     val networkFlow: StateFlow<Boolean>
