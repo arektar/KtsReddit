@@ -50,6 +50,24 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+
+    detekt {
+        config.setFrom(files("$rootDir/linters/detect/config.yaml"))
+        disableDefaultRuleSets = true
+        buildUponDefaultConfig = true
+        autoCorrect=true
+        description="Detect with formatting"
+        input = files(
+                "$rootDir/app/src/main/java",
+                "$rootDir/buildSrc/src/main/kotlin"
+        )
+
+
+        reports {
+            html.enabled = true
+            md.enabled = true
+        }
+    }
 }
 
 dependencies {

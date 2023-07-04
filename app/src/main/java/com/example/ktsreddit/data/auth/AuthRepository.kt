@@ -1,5 +1,6 @@
 package com.kts.github.data.auth
 
+import com.example.ktsreddit.data.auth.AppAuth
 import com.example.ktsreddit.data.storage.shared.KeyValueStorage
 import net.openid.appauth.AuthorizationRequest
 import net.openid.appauth.AuthorizationService
