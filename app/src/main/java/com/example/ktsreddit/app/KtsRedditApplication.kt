@@ -9,9 +9,6 @@ import timber.log.Timber
 
 class KtsRedditApplication : Application()  {
 
-
-    private val appModule = DI().getAppModule()
-
     override fun onCreate() {
         super.onCreate()
 
@@ -19,12 +16,13 @@ class KtsRedditApplication : Application()  {
             Timber.plant(Timber.DebugTree())
         }
 
-        startKoin {
-            androidContext(this@KtsRedditApplication)
-            modules(appModule)
-        }
-
         _context = this
+
+        startKoin {
+
+            androidContext(this@KtsRedditApplication)
+            modules(DI().getAppModule(_context as KtsRedditApplication))
+        }
 
     }
 

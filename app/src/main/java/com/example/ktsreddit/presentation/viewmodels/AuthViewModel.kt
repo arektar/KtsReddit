@@ -21,7 +21,12 @@ import net.openid.appauth.AuthorizationService
 import net.openid.appauth.TokenRequest
 import timber.log.Timber
 
-class AuthViewModel(application: Application, private val savedStateHandle: SavedStateHandle) :
+class AuthViewModel(
+    application: Application,
+    private val savedStateHandle: SavedStateHandle,
+    private val authRepository: AuthRepository,
+    private val authService: AuthorizationService
+) :
     AndroidViewModel(application) {
 
     private val _authState = MutableStateFlow(DEFAULT_AUTH_STATE)
@@ -31,9 +36,6 @@ class AuthViewModel(application: Application, private val savedStateHandle: Save
     val navEvents: Flow<NawRoute>
         get() = mutableNavEvent.receiveAsFlow()
 
-
-    private val authRepository = AuthRepository()
-    private val authService: AuthorizationService = AuthorizationService(getApplication())
 
     val authEvents: Flow<AuthEvent> = savedStateHandle.getStateFlow(
         AUTH_EVENTS_SAVE_KEY,

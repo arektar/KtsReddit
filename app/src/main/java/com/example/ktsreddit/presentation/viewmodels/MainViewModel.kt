@@ -18,7 +18,8 @@ import org.koin.core.component.KoinComponent
 
 class MainViewModel(
     private val savedStateHandle: SavedStateHandle,
-    private val repository: RedditRepository
+    private val repository: RedditRepository,
+    private val networkStatusTracker: NetworkStatusTracker
 ) : ViewModel() {
 
     val mainListState: StateFlow<List<RedditItem>> =
@@ -35,10 +36,10 @@ class MainViewModel(
 
 
     val networkFlow: StateFlow<Boolean>
-        get() = NetworkStatusTracker.networkFlow.stateIn(
+        get() = networkStatusTracker.networkFlow.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = NetworkStatusTracker.getCurrentStatus()
+            initialValue = networkStatusTracker.getCurrentStatus()
         )
 
     val fromDbStatusFlow: StateFlow<Boolean> =
