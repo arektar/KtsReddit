@@ -7,7 +7,7 @@ import retrofit2.create
 
 object Networking {
 
-    private val okhttpClientOauth: OkHttpClient = OkHttpClientOauth().getClient()
+    private var okhttpClientOauth: OkHttpClient = OkHttpClientOauth().getClient()
 
 
     private val retrofitOAuth = Retrofit.Builder()
@@ -17,6 +17,10 @@ object Networking {
         .build()
 
     val redditApiOAuth: RedditApi = retrofitOAuth.create()
+
+    fun updateClient(){
+        okhttpClientOauth = OkHttpClientOauth().getClient()
+    }
 
 }
 
