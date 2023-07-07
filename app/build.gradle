@@ -50,6 +50,24 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+
+    detekt {
+        config.setFrom(files("$rootDir/linters/detect/config.yaml"))
+        disableDefaultRuleSets = true
+        buildUponDefaultConfig = true
+        autoCorrect=true
+        description="Detect with formatting"
+        input = files(
+                "$rootDir/app/src/main/java",
+                "$rootDir/buildSrc/src/main/kotlin"
+        )
+
+
+        reports {
+            html.enabled = true
+            md.enabled = true
+        }
+    }
 }
 
 dependencies {
@@ -121,6 +139,12 @@ dependencies {
 
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:$room_version")
+
+    def koin_version = "3.4.2"
+    implementation "io.insert-koin:koin-android:$koin_version"
+    implementation "io.insert-koin:koin-androidx-compose:$koin_version"
+
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
 
 
 

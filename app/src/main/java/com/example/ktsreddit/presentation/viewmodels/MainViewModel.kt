@@ -1,4 +1,4 @@
-package com.example.ktsreddit.presentation.main
+package com.example.ktsreddit.presentation.viewmodels
 
 import android.annotation.SuppressLint
 import androidx.lifecycle.SavedStateHandle
@@ -14,9 +14,12 @@ import com.example.ktsreddit.presentation.common.utils.OneTimeEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
 
 class MainViewModel(
     private val savedStateHandle: SavedStateHandle,
+    private val repository: RedditRepository,
+    private val networkStatusTracker: NetworkStatusTracker
 ) : ViewModel() {
 
     val mainListState: StateFlow<List<RedditItem>> =
@@ -31,14 +34,12 @@ class MainViewModel(
         savedStateHandle.getStateFlow(QUERY_SUBREDDIT, DEFAULT_REDDIT_QUERY)
 
 
-    private val repository = RedditRepository()
-
 
     val networkFlow: StateFlow<Boolean>
-        get() = NetworkStatusTracker.networkFlow.stateIn(
+        get() = networkStatusTracker.networkFlow.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = NetworkStatusTracker.getCurrentStatus()
+            initialValue = networkStatusTracker.getCurrentStatus()
         )
 
     val fromDbStatusFlow: StateFlow<Boolean> =

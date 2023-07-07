@@ -19,20 +19,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.ktsreddit.R
-import com.example.ktsreddit.presentation.common.compose.mainlist.ImageMpItemView
-import com.example.ktsreddit.presentation.common.compose.mainlist.SimpleMpItemView
-import com.example.ktsreddit.presentation.common.compose_theme.KtsRedditTheme
+import com.example.ktsreddit.presentation.viewmodels.MainViewModel
+import com.example.ktsreddit.ui.common.compose.mainlist.ImageMpItemView
+import com.example.ktsreddit.ui.common.compose.mainlist.SimpleMpItemView
+import com.example.ktsreddit.ui.common.compose_theme.KtsRedditTheme
 import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
 import com.example.ktsreddit.presentation.common.items.reddit.RedditListItemImage
 import com.example.ktsreddit.presentation.common.items.reddit.RedditPost
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MainPageScreen(
     navController: NavController,
-    viewModel: MainViewModel = viewModel(),
+    viewModel: MainViewModel = koinViewModel()
 ) {
     ComposeMainScreen(viewModel)
 

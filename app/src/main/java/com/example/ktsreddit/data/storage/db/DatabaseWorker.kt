@@ -2,8 +2,8 @@ package com.example.ktsreddit.data.storage.db
 
 import androidx.room.Room
 import com.example.ktsreddit.app.KtsRedditApplication
-import com.example.ktsreddit.data.common.mappers.RedditPostsMapper
-import com.example.ktsreddit.data.common.mappers.PostMapper
+import com.example.ktsreddit.presentation.common.mappers.RedditPostsMapper
+import com.example.ktsreddit.presentation.common.mappers.PostMapper
 import com.example.ktsreddit.presentation.common.items.reddit.RedditPost
 
 object DatabaseWorker {

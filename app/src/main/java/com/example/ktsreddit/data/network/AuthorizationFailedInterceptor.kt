@@ -1,7 +1,7 @@
-package com.kts.github.data.network
+package com.example.ktsreddit.data.network
 
 import com.example.ktsreddit.data.storage.shared.KeyValueStorage
-import com.kts.github.data.auth.AppAuth
+import com.example.ktsreddit.data.auth.AppAuth
 import kotlinx.coroutines.runBlocking
 import net.openid.appauth.AuthorizationService
 import okhttp3.Interceptor

@@ -1,4 +1,4 @@
-package com.example.ktsreddit.presentation.common.compose.mainlist.components
+package com.example.ktsreddit.ui.common.compose.mainlist.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,8 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.ktsreddit.presentation.common.compose_theme.KtsRedditTheme
-import com.example.ktsreddit.presentation.common.compose_theme.myColors
+import com.example.ktsreddit.ui.common.compose_theme.KtsRedditTheme
+import com.example.ktsreddit.ui.common.compose_theme.myColors
 
 
 @Composable

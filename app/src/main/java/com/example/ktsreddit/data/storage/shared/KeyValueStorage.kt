@@ -7,21 +7,18 @@ object KeyValueStorage {
     private val sharedPref =
         KtsRedditApplication.appContext.getSharedPreferences("SharedPrefs", Context.MODE_PRIVATE)
 
-    private val ignoreOnBoarding = sharedPref.getBoolean("ignoreOnboarding", false)
-    private val authToken = sharedPref.getString("authToken", null)
-    private val refreshToken = sharedPref.getString("refreshToken", null)
 
 
     fun getIgnoreOnBoarding(): Boolean {
-        return ignoreOnBoarding
+        return sharedPref.getBoolean("ignoreOnboarding", false)
     }
 
     fun getAuthToken(): String? {
-        return authToken
+        return sharedPref.getString("authToken", null)
     }
 
     fun getRefreshToken(): String? {
-        return refreshToken
+        return sharedPref.getString("refreshToken", null)
     }
 
     fun setIgnoreOnBoarding(ignoreOnBoarding: Boolean) {

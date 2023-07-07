@@ -15,7 +15,7 @@ class OkHttpClientOauth {
 
             if (KeyValueStorage.getAuthToken() != null) {
                 builder
-                    .addHeader(AUTH_HEADER, AUTH_VALUE)
+                    .addHeader(AUTH_HEADER, getAuthValue())
                     .addHeader(USER_AGENT_HEADER, USER_AGENT_VALUE)
             }
 
@@ -29,10 +29,13 @@ class OkHttpClientOauth {
         ).build()
     }
 
+    fun getAuthValue():String{
+        return "bearer " + KeyValueStorage.getAuthToken()
+    }
+
 
     companion object {
         private const val AUTH_HEADER = "Authorization"
-        private val AUTH_VALUE = "bearer " + KeyValueStorage.getAuthToken()
         private const val USER_AGENT_HEADER = "User-Agent"
         private const val USER_AGENT_VALUE = "android:com.arektar.ktsRaddit:v1.0.0 (by u/arektar)"
         private const val TIMBER_LOG_TAG = "Network"

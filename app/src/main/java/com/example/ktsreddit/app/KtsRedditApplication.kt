@@ -3,6 +3,8 @@ package com.example.ktsreddit.app
 import android.app.Application
 import android.content.Context
 import com.example.ktsreddit.BuildConfig
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 import timber.log.Timber
 
 class KtsRedditApplication : Application()  {
@@ -16,7 +18,15 @@ class KtsRedditApplication : Application()  {
 
         _context = this
 
+        startKoin {
+
+            androidContext(this@KtsRedditApplication)
+            modules(DI().getAppModule(_context as KtsRedditApplication))
+        }
+
     }
+
+
 
 
     companion object {

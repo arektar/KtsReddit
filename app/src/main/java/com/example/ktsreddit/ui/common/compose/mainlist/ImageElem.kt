@@ -1,4 +1,4 @@
-package com.example.ktsreddit.presentation.common.compose.mainlist
+package com.example.ktsreddit.ui.common.compose.mainlist
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,10 +18,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.ktsreddit.presentation.common.compose.mainlist.components.MainListCard
-import com.example.ktsreddit.presentation.common.compose.mainlist.components.VoteButton
-import com.example.ktsreddit.presentation.common.compose_theme.KtsRedditTheme
-import com.example.ktsreddit.presentation.common.compose_theme.myColors
+import com.example.ktsreddit.ui.common.compose.mainlist.components.MainListCard
+import com.example.ktsreddit.ui.common.compose.mainlist.components.VoteButton
+import com.example.ktsreddit.ui.common.compose_theme.KtsRedditTheme
+import com.example.ktsreddit.ui.common.compose_theme.myColors
 import com.example.ktsreddit.presentation.common.items.reddit.LikeState
 import com.example.ktsreddit.presentation.common.items.reddit.RedditItem
 import com.example.ktsreddit.presentation.common.items.reddit.RedditListItemImage

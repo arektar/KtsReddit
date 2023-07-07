@@ -1,4 +1,4 @@
-package com.example.ktsreddit.presentation.auth
+package com.example.ktsreddit.presentation.viewmodels
 
 import android.app.Application
 import android.content.Intent
@@ -12,7 +12,7 @@ import com.example.ktsreddit.data.auth.models.*
 import com.example.ktsreddit.data.storage.shared.KeyValueStorage
 import com.example.ktsreddit.presentation.common.navigation.NawRoute
 import com.example.ktsreddit.presentation.common.utils.OneTimeEvent
-import com.kts.github.data.auth.AuthRepository
+import com.example.ktsreddit.data.auth.AuthRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import net.openid.appauth.AuthorizationException
@@ -21,7 +21,12 @@ import net.openid.appauth.AuthorizationService
 import net.openid.appauth.TokenRequest
 import timber.log.Timber
 
-class AuthViewModel(application: Application, private val savedStateHandle: SavedStateHandle) :
+class AuthViewModel(
+    application: Application,
+    private val savedStateHandle: SavedStateHandle,
+    private val authRepository: AuthRepository,
+    private val authService: AuthorizationService
+) :
     AndroidViewModel(application) {
 
     private val _authState = MutableStateFlow(DEFAULT_AUTH_STATE)
@@ -31,9 +36,6 @@ class AuthViewModel(application: Application, private val savedStateHandle: Save
     val navEvents: Flow<NawRoute>
         get() = mutableNavEvent.receiveAsFlow()
 
-
-    private val authRepository = AuthRepository()
-    private val authService: AuthorizationService = AuthorizationService(getApplication())
 
     val authEvents: Flow<AuthEvent> = savedStateHandle.getStateFlow(
         AUTH_EVENTS_SAVE_KEY,

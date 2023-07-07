@@ -18,19 +18,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.ktsreddit.R
-import com.example.ktsreddit.presentation.common.compose_theme.KtsRedditTheme
+import com.example.ktsreddit.presentation.viewmodels.OnBoardingViewModel
+import com.example.ktsreddit.ui.common.compose_theme.KtsRedditTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
+import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
 fun OnBoardingScreen(
     navController: NavController,
-    viewModel: OnBoardingViewModel = viewModel(),
+    viewModel: OnBoardingViewModel = koinViewModel()
 ) {
+
+
     OnBoardingPager(navigateNext = viewModel::onNextClick)
 
 

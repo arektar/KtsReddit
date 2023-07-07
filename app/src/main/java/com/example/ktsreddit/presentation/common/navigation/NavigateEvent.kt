@@ -10,10 +10,10 @@ sealed class NavigateEvent {
     fun navigate(navController: NavController) {
 
         when (this) {
-            is NavigateEvent.NavigateToAuth -> {
+            is NavigateToAuth -> {
                 navController.navigate("auth")
             }
-            is NavigateEvent.NavigateToMain -> {
+            is NavigateToMain -> {
                 navController.navigate("main")
             }
         }

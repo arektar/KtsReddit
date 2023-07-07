@@ -1,7 +1,7 @@
-package com.kts.github.data.auth
+package com.example.ktsreddit.data.auth
 
 import android.net.Uri
-import com.kts.github.data.auth.AppAuth.AuthConfig.CLIENT_SECRET
+import com.example.ktsreddit.data.auth.AppAuth.AuthConfig.CLIENT_SECRET
 import com.example.ktsreddit.data.auth.models.TokensModel
 import net.openid.appauth.*
 import kotlin.coroutines.suspendCoroutine
